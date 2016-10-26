@@ -11,126 +11,80 @@ Assignment 1 - Lexical Analyzer
 #include <vector>
 #include <cstdlib>
 #include <iomanip>
-using namespace std; 
+using namespace std;
 
 
-//Enumeration for ID_FSM
-enum id_columns
+class LA
 {
-	LETTER, ID_DIGIT, UNDERSCORE
-};
+public:
+	//Function prototypes
+	bool				checkIfKeyword(string currentToken);
+	bool				checkIfReal(string currentToken);
+	bool				doesTokenStartWithAlpha(string inputString);
+	int					get_ID_column(char input);
+	int					get_intReal_column(char input);
+	void				printHeader(string outfilepath);
+	void				printTokens(vector<tokenData> & tokens, string outfilepath);
+	vector<tokenData>	lexer(string inputString);
 
-//Enumeration for intReal_FSM
-enum intReal_columns
-{
-	INT_REAL_DIGIT, PERIOD
-};
-
-//These will be placed inside the vector
-struct tokenData
-{
-	string token;  //generic
-	string lexeme; //instance
-};
-
-//Transition table for the ID FSM (Zero-Based)
-//Acceptance states: 1, 2, 4
-const int FSM_ID_Table[6][3] = {
-	1, 5, 5,
-	2, 4, 3,
-	2, 4, 3,
-	2, 4, 3,
-	2, 4, 3,
-	6, 6, 6
-};
-
-//Transition table for the Digit FSM (Zero-Based)
-//Acceptance states: 1, 3
-const int FSM_Digit_Table[5][2] = {
-	1, 4,
-	1, 2,
-	3, 4,
-	3, 4,
-	4, 4
-};
-
-//Reserved keyword list
-string keywords[13] = { "function", "integer", "boolean", "real", "if", "endif",
-						"else", "return", "print", "read", "while", "true", "false" };
-
-//Reserved operator list
-string operators[11] = { ":=", "=", "/=", ">", "<", "=>", "<=", "+", "-", "*", "/"};
-
-//Reserved separator list
-string separators[11] = { "$$", ",", ":", ";", "|", "(", ")", "[", "]", "{", "}"};
-
-
-//Function prototypes
-bool				checkIfKeyword(string currentToken);
-bool				checkIfReal(string currentToken);
-bool				doesTokenStartWithAlpha(string inputString);
-int					get_ID_column(char input);
-int					get_intReal_column(char input);
-void				printHeader(string outfilepath);
-void				printTokens(vector<tokenData> & tokens, string outfilepath);
-vector<tokenData>	lexer(string inputString);
-
-
-int main() 
-{
-	bool				wroteHeader = false;
-	ifstream			ifget;
-	string				current = "";
-	string				infilepath = "";
-	string				outfilepath = "";
-	vector<tokenData>	tokens;
-	
-
-	//Input file to read from
-	cout << "Before you begin, make sure the input test file is in\nthe same folder as the .exe of this program.\n";
-	cout << "----------------------------------------------------------------------\n";
-	cout << "Please enter the file name and extension of the input file (input.txt).\n";
-	cout << "Input: ";
-	getline(cin, infilepath);
-	cout << "You entered: " << infilepath << endl << endl;
-
-	//Output file to write to
-	cout << "Please enter the file and extension of the output file (output.txt).\n";
-	cout << "Input: ";
-	getline(cin, outfilepath);
-	cout << "You entered: " << outfilepath << endl << endl;
-
-	//Open file for reading
-	ifget.open(infilepath);
-
-	//Catch issue with opening file
-	if (!ifget)
+	//Enumeration for ID_FSM
+	enum id_columns
 	{
-		cout << "Error. Unable to read file." << endl;
-		system("pause");
-		return -1;
-	}
+		LETTER, ID_DIGIT, UNDERSCORE
+	};
 
-	//While not end of file, read every line.
-	while (getline(ifget, current))
+	//Enumeration for intReal_FSM
+	enum intReal_columns
 	{
-		if (wroteHeader == false)
-		{
-			printHeader(outfilepath);
-			wroteHeader = true;
-		}
+		INT_REAL_DIGIT, PERIOD
+	};
 
-		tokens = lexer(current);
-		printTokens(tokens, outfilepath);
-	}
+	//These will be placed inside the vector
+	struct tokenData
+	{
+		string token;  //generic
+		string lexeme; //instance
+	};
 
-	ifget.close();
-	system("pause");
-	return 0;
-}
+	//Transition table for the ID FSM (Zero-Based)
+	//Acceptance states: 1, 2, 4
+	const int FSM_ID_Table[6][3] = {
+		1, 5, 5,
+		2, 4, 3,
+		2, 4, 3,
+		2, 4, 3,
+		2, 4, 3,
+		6, 6, 6
+	};
+
+	//Transition table for the Digit FSM (Zero-Based)
+	//Acceptance states: 1, 3
+	const int FSM_Digit_Table[5][2] = {
+		1, 4,
+		1, 2,
+		3, 4,
+		3, 4,
+		4, 4
+	};
+
+	//Reserved keyword list
+	string keywords[13] = { "function", "integer", "boolean", "real", "if", "endif",
+							"else", "return", "print", "read", "while", "true", "false" };
+
+	//Reserved operator list
+	string operators[11] = { ":=", "=", "/=", ">", "<", "=>", "<=", "+", "-", "*", "/"};
+
+	//Reserved separator list
+	string separators[11] = { "$$", ",", ":", ";", "|", "(", ")", "[", "]", "{", "}"};
+
+};
+
+
+
+
 
 //Lexer function to break apart source code into different tokens
-vector<tokenData> lexer(string inputString)
+vector<tokenData> LA::lexer(string inputString)
 {
 	bool				found = false;
 	char				currentChar;
@@ -328,7 +282,7 @@ vector<tokenData> lexer(string inputString)
 
 
 //Checks if first character of string is a letter
-bool doesTokenStartWithAlpha(string currentToken)
+bool LA::doesTokenStartWithAlpha(string currentToken)
 {
     if (isalpha(currentToken[0]))
         return true;
@@ -338,7 +292,7 @@ bool doesTokenStartWithAlpha(string currentToken)
 
 
 //Sets up the column for ID_FSM
-int get_ID_column(char input)
+int LA::get_ID_column(char input)
 {
 	int column = -1;
 
@@ -354,7 +308,7 @@ int get_ID_column(char input)
 
 
 //Sets up the column for intReal_FSM
-int get_intReal_column(char input)
+int LA::get_intReal_column(char input)
 {
 	int column = -1;
 
@@ -367,7 +321,7 @@ int get_intReal_column(char input)
 }
 
 //Linear search through the keywords array to check for value
-bool checkIfKeyword(string currentToken)
+bool LA::checkIfKeyword(string currentToken)
 {
 	for (int i = 0; i < 13; i++)
 	{
@@ -379,7 +333,7 @@ bool checkIfKeyword(string currentToken)
 
 
 //Checks whether integer or real value
-bool checkIfReal(string currentToken)
+bool LA::checkIfReal(string currentToken)
 {
 	for (int i = 0; i < currentToken.length(); i++)
 	{
@@ -391,7 +345,7 @@ bool checkIfReal(string currentToken)
 
 
 //Prints tokens and lexemes to screen and file
-void printTokens(vector<tokenData> & tokens, string outfilepath)
+void LA::printTokens(vector<tokenData> & tokens, string outfilepath)
 {
 	ofstream ofput;
 	ofput.open(outfilepath, ios_base::app);
@@ -407,7 +361,7 @@ void printTokens(vector<tokenData> & tokens, string outfilepath)
 
 
 //Prints the header to output file
-void printHeader(string outfilepath)
+void LA::printHeader(string outfilepath)
 {
 	ofstream ofput;
 	ofput.open(outfilepath);
