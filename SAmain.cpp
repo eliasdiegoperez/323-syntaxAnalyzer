@@ -11,7 +11,7 @@ Assignment 1 - Lexical Analyzer
 #include <vector>
 #include <cstdlib>
 #include <iomanip>
-using namespace std;
+using namespace std; 
 
 
 //Enumeration for ID_FSM
