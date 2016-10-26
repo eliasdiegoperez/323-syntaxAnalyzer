@@ -1,6 +1,6 @@
 /*
 Andrew Nguyen
-Joshua Womack
+Joshua Womack 
 CPSC323
 Assignment 1 - Lexical Analyzer
 */
@@ -62,7 +62,7 @@ string keywords[13] = { "function", "integer", "boolean", "real", "if", "endif",
 string operators[11] = { ":=", "=", "/=", ">", "<", "=>", "<=", "+", "-", "*", "/"};
 
 //Reserved separator list
-string separators[10] = { "$$", ",", ":", ";", "|", "(", ")", "[", "]", "{", "}"};
+string separators[11] = { "$$", ",", ":", ";", "|", "(", ")", "[", "]", "{", "}"};
 
 
 //Function prototypes
