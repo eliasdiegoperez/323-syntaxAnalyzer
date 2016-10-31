@@ -60,6 +60,11 @@ int main()
 	}
 
 	ifget.close();
+
+    /*
+     * New stuff goes here
+     */
+
 	system("pause");
 	return 0;
 }
