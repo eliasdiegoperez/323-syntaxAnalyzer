@@ -2,7 +2,7 @@
 Andrew Nguyen
 Joshua Womack 
 CPSC323
-Assignment 1 - Lexical Analyzer
+Assignment 2 - Syntax Analyzer
 */
 
 #include "LA.h"
