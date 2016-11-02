@@ -19,7 +19,7 @@ int main()
 	string				    current = "";
 	string				    infilepath = "";
 	string				    outfilepath = "";
-	vector<LA::tokenData>	tokens;
+	vector<tokenData>		tokens;
 	
 
 	//Input file to read from
