@@ -1,0 +1,10 @@
+Syntax Rules:
+    R1) <Expression> --> <Expression> + <Term> | <Expression> - <Term> | <Term>
+    R2) <Term> --> <Term> * <Factor> | <Term> / <Factor> | <Factor>
+    R3) <Factor> --> - <Primary> | <Primary>
+    R4) <Primary> --> <Identifier> | <Integer> | <Identifier> [<IDs>] | (<Expression>) | <Real> | true | false
+
+Remove Left Recursion:
+    R1) <Expression> ::= <Term> <Expression Prime>
+    R2) <Expression Prime> ::= + <Term> <Expression Prime> | epsilon
+
