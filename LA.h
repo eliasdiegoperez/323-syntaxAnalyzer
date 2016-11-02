@@ -14,6 +14,12 @@ Assignment 2 - Syntax Analyzer
 #include <iomanip>
 using namespace std;
 
+//These will be placed inside the vector
+struct tokenData
+{
+	string token;  //generic
+	string lexeme; //instance
+};
 
 class LA
 {
@@ -38,13 +44,6 @@ public:
 	enum intReal_columns
 	{
 		INT_REAL_DIGIT, PERIOD
-	};
-
-	//These will be placed inside the vector
-	struct tokenData
-	{
-		string token;  //generic
-		string lexeme; //instance
 	};
 
 	//Transition table for the ID FSM (Zero-Based)
