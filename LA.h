@@ -21,9 +21,42 @@ struct tokenData
 	string lexeme; //instance
 };
 
+//Transition table for the ID FSM (Zero-Based)
+//Acceptance states: 1, 2, 4
+const int FSM_ID_Table[6][3] = {
+	1, 5, 5,
+	2, 4, 3,
+	2, 4, 3,
+	2, 4, 3,
+	2, 4, 3,
+	5, 5, 5
+};
+
+//Transition table for the Digit FSM (Zero-Based)
+//Acceptance states: 1, 3
+const int FSM_Digit_Table[5][2] = {
+	1, 4,
+	1, 2,
+	3, 4,
+	3, 4,
+	4, 4
+};
+
+//Reserved keyword list
+string keywords[13] = { "function", "integer", "boolean", "real", "if", "endif",
+"else", "return", "print", "read", "while", "true", "false" };
+
+//Reserved operator list
+string operators[11] = { ":=", "=", "/=", ">", "<", "=>", "<=", "+", "-", "*", "/" };
+
+//Reserved separator list
+string separators[11] = { "$$", ",", ":", ";", "|", "(", ")", "[", "]", "{", "}" };
+
 class LA
 {
 public:
+	LA();
+
 	//Function prototypes
 	bool				checkIfKeyword(string currentToken);
 	bool				checkIfReal(string currentToken);
@@ -46,36 +79,7 @@ public:
 		INT_REAL_DIGIT, PERIOD
 	};
 
-	//Transition table for the ID FSM (Zero-Based)
-	//Acceptance states: 1, 2, 4
-	const int FSM_ID_Table[6][3] = {
-		1, 5, 5,
-		2, 4, 3,
-		2, 4, 3,
-		2, 4, 3,
-		2, 4, 3,
-		6, 6, 6
-	};
-
-	//Transition table for the Digit FSM (Zero-Based)
-	//Acceptance states: 1, 3
-	const int FSM_Digit_Table[5][2] = {
-		1, 4,
-		1, 2,
-		3, 4,
-		3, 4,
-		4, 4
-	};
-
-	//Reserved keyword list
-	string keywords[13] = { "function", "integer", "boolean", "real", "if", "endif",
-							"else", "return", "print", "read", "while", "true", "false" };
-
-	//Reserved operator list
-	string operators[11] = { ":=", "=", "/=", ">", "<", "=>", "<=", "+", "-", "*", "/"};
-
-	//Reserved separator list
-	string separators[11] = { "$$", ",", ":", ";", "|", "(", ")", "[", "]", "{", "}"};
+	
 
 };
 
@@ -280,6 +284,10 @@ vector<tokenData> LA::lexer(string inputString)
 	return tokens;
 }
 
+LA::LA()
+{
+
+};
 
 //Checks if first character of string is a letter
 bool LA::doesTokenStartWithAlpha(string currentToken)

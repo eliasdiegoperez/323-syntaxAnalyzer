@@ -1,5 +1,6 @@
 token          lexeme
 
+UNKNOWN        _xyz   
 SEPARATOR      $$     
 KEYWORD        function
 IDENTIFIER     doSomething
@@ -45,4 +46,4 @@ SEPARATOR      ;
 UNKNOWN        }      
 KEYWORD        endif  
 SEPARATOR      $$     
-IDENTIFIER     _xyz   
+UNKNOWN        _xyz   

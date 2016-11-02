@@ -1,3 +1,4 @@
+_xyz
 $$
 function doSomething [number:true]
 {
