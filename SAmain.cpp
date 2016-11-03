@@ -20,6 +20,7 @@ int main()
 	string				    infilepath = "";
 	string				    outfilepath = "";
 	vector<tokenData>		tokens;
+	vector<tokenData>		tokenList;
 	
 
 	//Input file to read from
@@ -57,10 +58,12 @@ int main()
 		}
 
 		tokens = lex.lexer(current);
-		lex.printTokens(tokens, outfilepath);
+		tokenList.insert(tokenList.end(), tokens.begin(), tokens.end());
+		tokens.clear();
 	}
 
 	ifget.close();
+	lex.printTokens(tokenList, outfilepath);
 
     /*
      * New stuff goes here
