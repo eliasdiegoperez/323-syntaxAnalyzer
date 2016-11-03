@@ -8,3 +8,8 @@ Remove Left Recursion:
     R1) <Expression> ::= <Term> <Expression Prime>
     R2) <Expression Prime> ::= + <Term> <Expression Prime> | epsilon
 
+
+Andyroo's Stab and Jab
+	R1) <Expression> --> <Term> <Expression Prime>
+	R2) <Expression Prime> --> + <Term> <Expression Prime> | - <Term> <Expression Prime> | Epsilon
+

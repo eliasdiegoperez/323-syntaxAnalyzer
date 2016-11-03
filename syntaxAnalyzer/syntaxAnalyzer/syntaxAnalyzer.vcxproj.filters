@@ -31,5 +31,8 @@
     <Text Include="output1.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="..\..\removeLeftRecursion.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
