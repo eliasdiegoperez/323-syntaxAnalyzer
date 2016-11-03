@@ -13,3 +13,5 @@ Andyroo's Stab and Jab
 	R1) <Expression> --> <Term> <Expression Prime>
 	R2) <Expression Prime> --> + <Term> <Expression Prime> | - <Term> <Expression Prime> | Epsilon
 
+	R3) <Term> --> <Factor> <Term Prime>
+	R4) <Term Prime> --> * <Factor> <Term Prime> | / <Factor> <Term Prime> | Epsilon
