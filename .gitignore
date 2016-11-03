@@ -242,3 +242,5 @@ ModelManifest.xml
 .fake/
 .idea/
 CMakeLists.txt
+*.swp
+.removeLeftRecursion.txt.swp
