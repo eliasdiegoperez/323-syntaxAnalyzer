@@ -127,9 +127,8 @@ void lexAdv() {
 			cout << left << setw(7) << "\nToken: " << left << setw(20) << currentToken.token
 				 << left << setw(8) << "Lexeme: " << left << setw(20) << currentToken.lexeme << endl;
 		}
-
+		tokenIndex++;
 	}
-	tokenIndex++;
 }
 
 
@@ -141,12 +140,16 @@ void Rat16F()
 
 	if (currentToken.lexeme == "$$")
 	{
+		lexAdv();
 		OptFuncDef();
+		lexAdv();                                   //After OptFuncDef(), this advances currentToken to $$
 		if (currentToken.lexeme == "$$")
 		{
 			lexAdv();
 			OptDecList();
 			StatementList();
+			if (currentToken.lexeme == "$$")
+				cout << "The End.\n";
 		}
 	}
 }
@@ -154,7 +157,6 @@ void Rat16F()
 
 void OptFuncDef()
 {
-	lexAdv();
 	if (printSwitch)
 		cout << "\t<Opt Function Definition> ::= <Function Definitions> | <Empty>\n";
 
@@ -170,6 +172,10 @@ void FuncDef()
 	if (printSwitch)
 		cout << "\t<Function Definitions> ::= <Function> | <Function> <Function Definitions>\n";
 
+	do
+	{
+		Func();
+	}while(currentToken.lexeme == "function");
 }
 
 
@@ -177,6 +183,18 @@ void Func()
 {
 	if (printSwitch)
 		cout << "\t<Function> ::= function <Identifier> [ <Opt Paramenter List> ] <Opt Declaration List> <Body>\n";
+
+	lexAdv();
+
+	if (currentToken.token == "IDENTIFIER")
+	{
+		lexAdv();
+		if (currentToken.lexeme == "[")
+		{
+			lexAdv();
+			OptParamList();
+		}
+	}
 }
 
 
@@ -184,6 +202,9 @@ void OptParamList()
 {
 	if (printSwitch)
 		cout << "\t<Opt Parameter List> ::= <Parameter List> | <Empty>\n";
+
+	ParamList();
+
 }
 
 
@@ -191,6 +212,18 @@ void ParamList()
 {
 	if (printSwitch)
 		cout << "\t<Parameter List> ::= <Parameter> | <Parameter>, <Parameter List>\n";
+
+	Parameter();
+
+	if (currentToken.token == "IDENTIFIER")
+	{
+		lexAdv();
+		if (currentToken.lexeme == ",")
+		{
+			lexAdv();
+			IDs();
+		}
+	}
 }
 
 
@@ -198,6 +231,13 @@ void Parameter()
 {
 	if (printSwitch)
 		cout << "\t<Parameter> ::= <IDs> : <Qualifier>\n";
+
+	IDs();
+	if (currentToken.lexeme == ":")
+	{
+		lexAdv();
+		Qualifier();
+	}
 }
 
 
@@ -205,6 +245,14 @@ void Qualifier()
 {
 	if (printSwitch)
 		cout << "\t<Qualifier> ::= integer | boolean | real\n";
+
+	if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
+		lexAdv();
+	else
+	{
+		cout << "Oops, you broke it. Expected 'integer', 'boolean', or 'real'\n";
+		exit(-1);
+	}
 }
 
 
@@ -240,8 +288,17 @@ void IDs()
 {
 	if (printSwitch)
 		cout << "\t<IDs> ::= <Identifier> | <Identifier>, <IDs>\n";
-}
 
+	if (currentToken.token == "IDENTIFIER")
+	{
+		lexAdv();
+		if (currentToken.lexeme == ",")
+		{
+			lexAdv();
+			IDs();
+		}
+	}
+}
 
 void StatementList()
 {
