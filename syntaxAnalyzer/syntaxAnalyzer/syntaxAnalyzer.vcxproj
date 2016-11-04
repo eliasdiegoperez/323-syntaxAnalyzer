@@ -116,6 +116,7 @@
     <ClInclude Include="..\..\LA.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\..\input.txt" />
     <Text Include="..\..\removeLeftRecursion.txt" />
     <Text Include="output1.txt" />
     <Text Include="test.txt" />

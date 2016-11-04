@@ -142,7 +142,6 @@ void Rat16F()
 	{
 		lexAdv();
 		OptFuncDef();
-		lexAdv();                                   //After OptFuncDef(), this advances currentToken to $$
 		if (currentToken.lexeme == "$$")
 		{
 			lexAdv();
@@ -161,7 +160,10 @@ void OptFuncDef()
 		cout << "\t<Opt Function Definition> ::= <Function Definitions> | <Empty>\n";
 
 	if (currentToken.lexeme == "function")
+	{
+		lexAdv();
 		FuncDef();
+	}
 	else
 		Empty();
 }
@@ -172,10 +174,10 @@ void FuncDef()
 	if (printSwitch)
 		cout << "\t<Function Definitions> ::= <Function> | <Function> <Function Definitions>\n";
 
-	do
+	while (currentToken.lexeme == "function")
 	{
 		Func();
-	}while(currentToken.lexeme == "function");
+	}
 }
 
 
@@ -193,6 +195,12 @@ void Func()
 		{
 			lexAdv();
 			OptParamList();
+			if (currentToken.lexeme == "]")
+			{
+				lexAdv();
+				OptDecList();
+				Body();
+			}
 		}
 	}
 }
@@ -203,8 +211,14 @@ void OptParamList()
 	if (printSwitch)
 		cout << "\t<Opt Parameter List> ::= <Parameter List> | <Empty>\n";
 
-	ParamList();
-
+	if (currentToken.token == "IDENTIFIER")
+	{
+		ParamList();
+	}
+	else
+	{
+		Empty();
+	}
 }
 
 
@@ -213,7 +227,6 @@ void ParamList()
 	if (printSwitch)
 		cout << "\t<Parameter List> ::= <Parameter> | <Parameter>, <Parameter List>\n";
 
-	Parameter();
 
 	if (currentToken.token == "IDENTIFIER")
 	{
@@ -221,7 +234,7 @@ void ParamList()
 		if (currentToken.lexeme == ",")
 		{
 			lexAdv();
-			IDs();
+			ParamList();
 		}
 	}
 }
@@ -267,6 +280,14 @@ void OptDecList()
 {
 	if (printSwitch)
 		cout << "\t<Opt Declaration List> ::= <Declaration List> | <Empty>\n";
+	if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
+	{
+		DecList();
+	}
+	else
+	{
+		Empty();
+	}
 }
 
 
@@ -274,6 +295,14 @@ void DecList()
 {
 	if (printSwitch)
 		cout << "\t<Declaration List> ::= <Declaration>; | <Declaration> ; <Declaration List>\n";
+	
+	Declaration();
+	if (currentToken.lexeme == ";")
+	{
+		lexAdv();
+		DecList();
+	}
+
 }
 
 
@@ -281,6 +310,9 @@ void Declaration()
 {
 	if (printSwitch)
 		cout << "\t<Declaration> ::= <Qualifier> <IDs>\n";
+
+	Qualifier();
+	IDs();
 }
 
 
