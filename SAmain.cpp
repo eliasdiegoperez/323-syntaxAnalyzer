@@ -11,6 +11,44 @@ Assignment 2 - Syntax Analyzer
 using namespace std;
 
 
+void Rat16F();
+void OptFuncDef();
+void FuncDef();
+void Func();
+void OptParamList();
+void ParamList();
+void Parameter();
+void Qualifier();
+void Body();
+void OptDecList();
+void DecList();
+void Declaration();
+void IDs();
+void StatementList();
+void Statement();
+void Compound();
+void Assign();
+void If();
+void Return();
+void Write();
+void Read();
+void While();
+void Condition();
+void Relop();
+void Expression();
+void ExpressionPrime();
+void Term();
+void TermPrime();
+void Factor();
+void Primary();
+void Empty();
+
+
+int tokenIndex = 0;
+vector<tokenData>   tokens;
+vector<tokenData>   tokenList;
+tokenData           currentToken;
+
 int main() 
 {
 	bool				    wroteHeader = false;
@@ -19,9 +57,7 @@ int main()
 	string				    current = "";
 	string				    infilepath = "";
 	string				    outfilepath = "";
-	vector<tokenData>		tokens;
-	vector<tokenData>		tokenList;
-	
+
 
 	//Input file to read from
 	cout << "Before you begin, make sure the input test file is in\nthe same folder as the .exe of this program.\n";
@@ -71,5 +107,180 @@ int main()
 
 	system("pause");
 	return 0;
+}
+
+
+
+void Rat16F()
+{
+	if (currentToken.lexeme == "$$")
+	{
+		lexAdv();
+		OptFuncDef();
+		if (currentToken.lexeme == "$$")
+		{
+			OptDecList();
+			StatementList();
+		}
+	}
+}
+
+void OptFuncDef()
+{
+
+}
+
+void funcdef()
+{
+
+}
+
+void func()
+{
+
+}
+
+void optparamlist()
+{
+
+}
+
+void ParamList()
+{
+
+}
+
+void Parameter()
+{
+
+}
+
+void Qualifier()
+{
+
+}
+
+void Body()
+{
+
+}
+
+void OptDecList()
+{
+
+}
+
+void DecList()
+{
+
+}
+
+void Declaration()
+{
+
+}
+
+void IDs()
+{
+
+}
+
+void StatementList()
+{
+
+}
+
+void Statement()
+{
+
+}
+
+void Compound()
+{
+
+}
+
+void Assign()
+{
+
+}
+
+void If()
+{
+
+}
+
+void Return()
+{
+
+}
+
+void Write()
+{
+
+}
+
+void Read()
+{
+
+}
+
+void While()
+{
+
+}
+
+void Condition()
+{
+
+}
+
+void Relop()
+{
+
+}
+
+void Expression()
+{
+
+}
+
+void ExpressionPrime()
+{
+
+}
+
+void Term()
+{
+
+}
+
+void TermPrime()
+{
+
+}
+
+void Factor()
+{
+
+}
+
+void Primary()
+{
+
+}
+
+void Empty()
+{
+
+}
+
+void lexAdv()
+{
+	if (tokenIndex < tokenList.size())
+	{
+		currentToken = tokenList[tokenIndex];
+	}
+	tokenIndex++;
 }
 
