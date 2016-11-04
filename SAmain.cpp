@@ -254,6 +254,65 @@ void Parameter()
 }
 
 
+void Body()
+{
+	if (printSwitch)
+		cout << "\t<Body> ::= { <Statement List> }\n";
+
+	if (currentToken.lexeme == "{")
+	{
+		lexAdv();
+		StatementList();
+	}
+	else
+	{
+		cout << "Syntax Error";
+		exit(-1);
+	}
+}
+
+
+void OptDecList()
+{
+	if (printSwitch)
+		cout << "\t<Opt Declaration List> ::= <Declaration List> | <Empty>\n";
+
+
+	if (currentToken.lexeme == "{")
+		Empty();
+	else if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
+		DecList();
+	else
+	{
+		cout << "Syntax Error";
+		exit(-1);
+	}
+}
+
+
+void DecList()
+{
+	if (printSwitch)
+		cout << "\t<Declaration List> ::= <Declaration>; | <Declaration> ; <Declaration List>\n";
+
+		Declaration();
+		if (currentToken.lexeme == ";")
+			lexAdv();
+			if (currentToken.lexeme != "{")
+				DecList();
+}
+
+
+void Declaration()
+{
+	if (printSwitch)
+		cout << "\t<Declaration> ::= <Qualifier> <IDs>\n";
+
+	Qualifier();
+	IDs();
+}
+
+
 void Qualifier()
 {
 	if (printSwitch)
@@ -266,53 +325,6 @@ void Qualifier()
 		cout << "Oops, you broke it. Expected 'integer', 'boolean', or 'real'\n";
 		exit(-1);
 	}
-}
-
-
-void Body()
-{
-	if (printSwitch)
-		cout << "\t<Body> ::= { <Statement List> }\n";
-}
-
-
-void OptDecList()
-{
-	if (printSwitch)
-		cout << "\t<Opt Declaration List> ::= <Declaration List> | <Empty>\n";
-	if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
-	{
-		DecList();
-	}
-	else
-	{
-		Empty();
-	}
-}
-
-
-void DecList()
-{
-	if (printSwitch)
-		cout << "\t<Declaration List> ::= <Declaration>; | <Declaration> ; <Declaration List>\n";
-	
-	Declaration();
-	if (currentToken.lexeme == ";")
-	{
-		lexAdv();
-		DecList();
-	}
-
-}
-
-
-void Declaration()
-{
-	if (printSwitch)
-		cout << "\t<Declaration> ::= <Qualifier> <IDs>\n";
-
-	Qualifier();
-	IDs();
 }
 
 
@@ -336,6 +348,26 @@ void StatementList()
 {
 	if (printSwitch)
 		cout << "\t<Statement List> ::= <Statement> | <Statement> <Statement List>\n";
+
+
+
+/*
+	if (currentToken.token == "IDENTIFIER")
+	{
+		lexAdv();
+		if (currentToken.lexeme == "[")
+		{
+			lexAdv();
+			OptParamList();
+			if (currentToken.lexeme == "]")
+			{
+				lexAdv();
+				OptDecList();
+				Body();
+			}
+		}
+	}
+*/
 }
 
 
