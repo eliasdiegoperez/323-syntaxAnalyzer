@@ -7,7 +7,6 @@ Assignment 2 - Syntax Analyzer
 */
 
 #include "LA.h"
-
 using namespace std;
 
 
@@ -45,15 +44,15 @@ void Empty();
 void lexAdv();
 
 
-int tokenIndex = 0;
-bool printSwitch =  true;
-vector<tokenData>   tokens;
-vector<tokenData>   tokenList;
-tokenData           currentToken;
+int                     tokenIndex = 0;             //Index used to step through token vector
+bool                    printSwitch = true;
+vector<tokenData>       tokens;                     //vector to hold tokens as they are being inputted
+vector<tokenData>       tokenList;                  //vector that holds all tokens once they have been read in initially
+tokenData               currentToken;
 
 int main() 
 {
-	bool				    wroteHeader = false;
+	bool				    wroteHeader = true;     //NOT NEEDED ANYMORE?
 	ifstream			    ifget;
 	LA                      lex;
 	string				    current = "";
@@ -62,6 +61,7 @@ int main()
 
 
 	//Input file to read from
+/*
 	cout << "Before you begin, make sure the input test file is in\nthe same folder as the .exe of this program.\n";
 	cout << "----------------------------------------------------------------------\n";
 	cout << "Please enter the file name and extension of the input file (input.txt).\n";
@@ -77,6 +77,11 @@ int main()
 
 	//Open file for reading
 	ifget.open(infilepath);
+*/
+	infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
+	outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	ifget.open(infilepath);
+
 
 	//Catch issue with opening file
 	if (!ifget)
@@ -101,26 +106,41 @@ int main()
 	}
 
 	ifget.close();
-	lex.printTokens(tokenList, outfilepath);
+	//lex.printTokens(tokenList, outfilepath);
 
     /*
      * New stuff goes here
      */
+	Rat16F();
 
 	system("pause");
 	return 0;
 }
 
 
+void lexAdv() {
+	if (tokenIndex < tokenList.size())
+	{
+		currentToken = tokenList[tokenIndex];
+		if (printSwitch)
+		{
+			cout << left << setw(7) << "\nToken: " << left << setw(20) << currentToken.token
+				 << left << setw(8) << "Lexeme: " << left << setw(20) << currentToken.lexeme << endl;
+		}
+
+	}
+	tokenIndex++;
+}
+
 
 void Rat16F()
 {
-	if (printSwitch == true)
-		cout << "<Rat16F> ::= $$ <Opt Function Definitions>\n$$ <Opt Declaration List> <Statement List> $$\n";
+	lexAdv();
+	if (printSwitch)
+		cout << "\t<Rat16F> ::= $$ <Opt Function Definitions>\n\t\t\t\t $$ <Opt Declaration List> <Statement List> $$\n";
 
 	if (currentToken.lexeme == "$$")
 	{
-		lexAdv();
 		OptFuncDef();
 		if (currentToken.lexeme == "$$")
 		{
@@ -131,217 +151,221 @@ void Rat16F()
 	}
 }
 
+
 void OptFuncDef()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Opt Function Definition> ::= <Function Definitions> | <Empty>\n";
-	}
+	lexAdv();
+	if (printSwitch)
+		cout << "\t<Opt Function Definition> ::= <Function Definitions> | <Empty>\n";
+
+	if (currentToken.lexeme == "function")
+		FuncDef();
+	else
+		Empty();
 }
+
 
 void FuncDef()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Function Definitions> ::= <Function> | <Function> <Function Definitions>\n";
-	}
+	if (printSwitch)
+		cout << "\t<Function Definitions> ::= <Function> | <Function> <Function Definitions>\n";
+
 }
+
 
 void Func()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Function> ::= function <Identifier> [ <Opt Paramenter List> ] <Opt Declaration List> <Body>\n";
-	}
+	if (printSwitch)
+		cout << "\t<Function> ::= function <Identifier> [ <Opt Paramenter List> ] <Opt Declaration List> <Body>\n";
 }
+
 
 void OptParamList()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Opt Parameter List> ::= <Parameter List> | <Empty>\n";
-	}
+	if (printSwitch)
+		cout << "\t<Opt Parameter List> ::= <Parameter List> | <Empty>\n";
 }
+
 
 void ParamList()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Parameter List> ::= <Parameter> | <Parameter>, <Parameter List>\n";
-	}
+	if (printSwitch)
+		cout << "\t<Parameter List> ::= <Parameter> | <Parameter>, <Parameter List>\n";
 }
+
 
 void Parameter()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Parameter> ::= <IDs> : <Qualifier>\n";
-	}
+	if (printSwitch)
+		cout << "\t<Parameter> ::= <IDs> : <Qualifier>\n";
 }
+
 
 void Qualifier()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Qualifier> ::= integer | boolean | real\n";
-	}
+	if (printSwitch)
+		cout << "\t<Qualifier> ::= integer | boolean | real\n";
 }
+
 
 void Body()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Body> ::= { <Statement List> }\n";
-	}
+	if (printSwitch)
+		cout << "\t<Body> ::= { <Statement List> }\n";
 }
+
 
 void OptDecList()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Opt Declaration List> ::= <Declaration List> | <Empty>\n";
-	}
+	if (printSwitch)
+		cout << "\t<Opt Declaration List> ::= <Declaration List> | <Empty>\n";
 }
+
 
 void DecList()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Declaration List> ::= <Declaration>; | <Declaration> ; <Declaration List>\n";
-	}
+	if (printSwitch)
+		cout << "\t<Declaration List> ::= <Declaration>; | <Declaration> ; <Declaration List>\n";
 }
+
 
 void Declaration()
 {
-	if (printSwitch == true)
-	{
-		cout << "<Declaration> ::= <Qualifier> <IDs>\n";
-	}
+	if (printSwitch)
+		cout << "\t<Declaration> ::= <Qualifier> <IDs>\n";
 }
+
 
 void IDs()
 {
-	if (printSwitch == true)
-	{
-		cout << "<IDs> ::= <Identifier> | <Identifier>, <IDs>\n";
-	}
+	if (printSwitch)
+		cout << "\t<IDs> ::= <Identifier> | <Identifier>, <IDs>\n";
 }
+
 
 void StatementList()
 {
-	if (printSwitch == true)
-		cout << "<Statement List> ::= <Statement> | <Statement> <Statement List>\n";
+	if (printSwitch)
+		cout << "\t<Statement List> ::= <Statement> | <Statement> <Statement List>\n";
 }
+
 
 void Statement()
 {
-	if (printSwitch == true)
-		cout << "<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Write> | <Read> | <While>\n";
+	if (printSwitch)
+		cout << "\t<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Write> | <Read> | <While>\n";
 }
+
 
 void Compound()
 {
-	if (printSwitch == true)
-		cout << "<Compound> ::= {<Statement List>}\n";
+	if (printSwitch)
+		cout << "\t<Compound> ::= {<Statement List>}\n";
 }
+
 
 void Assign()
 {
-	if (printSwitch == true)
-		cout << "<Assign> ::= <Identifier> := <Expression>;\n";
+	if (printSwitch)
+		cout << "\t<Assign> ::= <Identifier> := <Expression>;\n";
 }
+
 
 void If()
 {
-	if (printSwitch == true)
-		cout << "<If> ::= if (<Condition>) <Statement> endif | if (<Condition>) <Statement> else <Statement> endif\n";
+	if (printSwitch)
+		cout << "\t<If> ::= if (<Condition>) <Statement> endif | if (<Condition>) <Statement> else <Statement> endif\n";
 }
+
 
 void Return()
 {
-	if (printSwitch == true)
-		cout << "<Return> ::= return; | return <Expression>;\n";
+	if (printSwitch)
+		cout << "\t<Return> ::= return; | return <Expression>;\n";
 }
+
 
 void Write()
 {
-	if (printSwitch == true)
-		cout << "<Write> ::= print (<Expressions>);\n";
+	if (printSwitch)
+		cout << "\t<Write> ::= print (<Expressions>);\n";
 }
+
 
 void Read()
 {
-	if (printSwitch == true)
-		cout << "<Read> ::= read (<IDs>);\n";
+	if (printSwitch)
+		cout << "\t<Read> ::= read (<IDs>);\n";
 }
+
 
 void While()
 {
-	if (printSwitch == true)
-		cout << "<While> ::= while (<Condition>) <Statement>\n";
+	if (printSwitch)
+		cout << "\t<While> ::= while (<Condition>) <Statement>\n";
 }
+
 
 void Condition()
 {
-	if (printSwitch == true)
-		cout << "<Condition> ::= <Expression> <Relop> <Expression>\n";
+	if (printSwitch)
+		cout << "\t<Condition> ::= <Expression> <Relop> <Expression>\n";
 }
+
 
 void Relop()
 {
-	if (printSwitch == true)
-		cout << "<Relop> ::= = | /= | > | < | => | <=\n";
+	if (printSwitch)
+		cout << "\t<Relop> ::= = | /= | > | < | => | <=\n";
 }
+
 
 void Expression()
 {
-	if (printSwitch == true)
-		cout << "<Expression> ::= <Term> <Expression Prime>\n";
+	if (printSwitch)
+		cout << "\t<Expression> ::= <Term> <Expression Prime>\n";
 }
+
 
 void ExpressionPrime()
 {
-	if (printSwitch == true)
-		cout << "<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>\n";
+	if (printSwitch)
+		cout << "\t<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>\n";
 }
+
 
 void Term()
 {
-	if (printSwitch == true)
-		cout << "<Term> ::= <Factor> <Term Prime>\n";
+	if (printSwitch)
+		cout << "\t<Term> ::= <Factor> <Term Prime>\n";
 }
+
 
 void TermPrime()
 {
-	if (printSwitch == true)
-		cout <<  "<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>\n";
+	if (printSwitch)
+		cout <<  "\t<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>\n";
 }
+
 
 void Factor()
 {
-	if (printSwitch == true)
-		cout << "<Factor> ::= - <Primary> | <Primary>\n";
+	if (printSwitch)
+		cout << "\t<Factor> ::= - <Primary> | <Primary>\n";
 }
+
 
 void Primary()
 {
-	if (printSwitch == true)
-		cout << "<Primary> ::= <Identifier> | <Integer> | <Idetifier> [<IDs>] | (<Expression>) | <Real> | true | false\n";
+	if (printSwitch)
+		cout << "\t<Primary> ::= <Identifier> | <Integer> | <Idetifier> [<IDs>] | (<Expression>) | <Real> | true | false\n";
 }
+
 
 void Empty()
 {
-	if (printSwitch == true)
-		cout << "<Empty> ::= epsilon\n";
+	if (printSwitch)
+		cout << "\t<Empty> ::= epsilon\n";
 
 }
-
-void lexAdv() {
-	if (tokenIndex < tokenList.size())
-	{
-		currentToken = tokenList[tokenIndex];
-	}
-	tokenIndex++;
-}
-
 

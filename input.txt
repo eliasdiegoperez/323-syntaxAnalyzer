@@ -1,4 +1,3 @@
-_xyz
 $$
 function doSomething [number:true]
 {
@@ -14,4 +13,3 @@ $$
         print(num1);
     }endif
 $$
-_xyz
