@@ -135,7 +135,7 @@ void OptFuncDef()
 	}
 }
 
-void funcdef()
+void FuncDef()
 {
 	if (printSwitch == true)
 	{
@@ -143,7 +143,7 @@ void funcdef()
 	}
 }
 
-void func()
+void Func()
 {
 	if (printSwitch == true)
 	{
@@ -151,7 +151,7 @@ void func()
 	}
 }
 
-void optparamlist()
+void OptParamList()
 {
 	if (printSwitch == true)
 	{
