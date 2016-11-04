@@ -42,9 +42,11 @@ void TermPrime();
 void Factor();
 void Primary();
 void Empty();
+void lexAdv();
 
 
 int tokenIndex = 0;
+bool printSwitch = true;
 vector<tokenData>   tokens;
 vector<tokenData>   tokenList;
 tokenData           currentToken;
@@ -127,62 +129,98 @@ void Rat16F()
 
 void OptFuncDef()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Opt Function Definition> ::= <Function Definitions> | <Empty>\n";
+	}
 }
 
 void funcdef()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Function Definitions> ::= <Function> | <Function> <Function Definitions>\n";
+	}
 }
 
 void func()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Function> ::= function <Identifier> [ <Opt Paramenter List> ] <Opt Declaration List> <Body>\n";
+	}
 }
 
 void optparamlist()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Opt Parameter List> ::= <Parameter List> | <Empty>\n";
+	}
 }
 
 void ParamList()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Parameter List> ::= <Parameter> | <Parameter>, <Parameter List>\n";
+	}
 }
 
 void Parameter()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Parameter> ::= <IDs> : <Qualifier>\n";
+	}
 }
 
 void Qualifier()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Qualifier> ::= integer | boolean | real\n";
+	}
 }
 
 void Body()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Body> ::= { <Statement List> }\n";
+	}
 }
 
 void OptDecList()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Opt Declaration List> ::= <Declaration List> | <Empty>\n";
+	}
 }
 
 void DecList()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Declaration List> ::= <Declaration>; | <Declaration> ; <Declaration List>\n";
+	}
 }
 
 void Declaration()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<Declaration> ::= <Qualifier> <IDs>\n";
+	}
 }
 
 void IDs()
 {
-
+	if (printSwitch == true)
+	{
+		cout << "<IDs> ::= <Identifier> | <Identifier>, <IDs>\n";
+	}
 }
 
 void StatementList()
