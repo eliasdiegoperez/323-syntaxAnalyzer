@@ -42,9 +42,11 @@ void TermPrime();
 void Factor();
 void Primary();
 void Empty();
+void lexAdv();
 
 
 int tokenIndex = 0;
+bool printSwitch =  true;
 vector<tokenData>   tokens;
 vector<tokenData>   tokenList;
 tokenData           currentToken;
@@ -113,12 +115,16 @@ int main()
 
 void Rat16F()
 {
+	if (printSwitch == true)
+		cout << "<Rat16F> ::= $$ <Opt Function Definitions>\n$$ <Opt Declaration List> <Statement List> $$\n";
+
 	if (currentToken.lexeme == "$$")
 	{
 		lexAdv();
 		OptFuncDef();
 		if (currentToken.lexeme == "$$")
 		{
+			lexAdv();
 			OptDecList();
 			StatementList();
 		}
@@ -187,100 +193,119 @@ void IDs()
 
 void StatementList()
 {
-
+	if (printSwitch == true)
+		cout << "<Statement List> ::= <Statement> | <Statement> <Statement List>\n";
 }
 
 void Statement()
 {
-
+	if (printSwitch == true)
+		cout << "<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Write> | <Read> | <While>\n";
 }
 
 void Compound()
 {
-
+	if (printSwitch == true)
+		cout << "<Compound> ::= {<Statement List>}\n";
 }
 
 void Assign()
 {
-
+	if (printSwitch == true)
+		cout << "<Assign> ::= <Identifier> := <Expression>;\n";
 }
 
 void If()
 {
-
+	if (printSwitch == true)
+		cout << "<If> ::= if (<Condition>) <Statement> endif | if (<Condition>) <Statement> else <Statement> endif\n";
 }
 
 void Return()
 {
-
+	if (printSwitch == true)
+		cout << "<Return> ::= return; | return <Expression>;\n";
 }
 
 void Write()
 {
-
+	if (printSwitch == true)
+		cout << "<Write> ::= print (<Expressions>);\n";
 }
 
 void Read()
 {
-
+	if (printSwitch == true)
+		cout << "<Read> ::= read (<IDs>);\n";
 }
 
 void While()
 {
-
+	if (printSwitch == true)
+		cout << "<While> ::= while (<Condition>) <Statement>\n";
 }
 
 void Condition()
 {
-
+	if (printSwitch == true)
+		cout << "<Condition> ::= <Expression> <Relop> <Expression>\n";
 }
 
 void Relop()
 {
-
+	if (printSwitch == true)
+		cout << "<Relop> ::= = | /= | > | < | => | <=\n";
 }
 
 void Expression()
 {
-
+	if (printSwitch == true)
+		cout << "<Expression> ::= <Term> <Expression Prime>\n";
 }
 
 void ExpressionPrime()
 {
-
+	if (printSwitch == true)
+		cout << "<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>\n";
 }
 
 void Term()
 {
-
+	if (printSwitch == true)
+		cout << "<Term> ::= <Factor> <Term Prime>\n";
 }
 
 void TermPrime()
 {
-
+	if (printSwitch == true)
+		cout <<  "<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>\n";
 }
 
 void Factor()
 {
-
+	if (printSwitch == true)
+		cout << "<Factor> ::= - <Primary> | <Primary>\n";
 }
 
 void Primary()
 {
-
+	if (printSwitch == true)
+		cout << "<Primary> ::= <Identifier> | <Integer> | <Idetifier> [<IDs>] | (<Expression>) | <Real> | true | false\n";
 }
 
 void Empty()
 {
+	if (printSwitch == true)
+		cout << "<Empty> ::= epsilon\n";
 
 }
 
-void lexAdv()
-{
+void lexAdv() {
 	if (tokenIndex < tokenList.size())
 	{
 		currentToken = tokenList[tokenIndex];
 	}
 	tokenIndex++;
 }
+
 
