@@ -242,7 +242,7 @@ vector<tokenData> LA::lexer(string inputString)
 				}
 
 				//For finding separator
-				for (int j = 0; j < 10; j++)
+				for (int j = 0; j < 11; j++)
 				{
 					if (currentToken == separators[j])
 					{

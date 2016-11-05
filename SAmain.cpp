@@ -61,7 +61,6 @@ int main()
 
 
 	//Input file to read from
-/*
 	cout << "Before you begin, make sure the input test file is in\nthe same folder as the .exe of this program.\n";
 	cout << "----------------------------------------------------------------------\n";
 	cout << "Please enter the file name and extension of the input file (input.txt).\n";
@@ -70,17 +69,17 @@ int main()
 	cout << "You entered: " << infilepath << endl << endl;
 
 	//Output file to write to
-	cout << "Please enter the file and extension of the output file (output.txt).\n";
-	cout << "Input: ";
-	getline(cin, outfilepath);
-	cout << "You entered: " << outfilepath << endl << endl;
+	//cout << "Please enter the file and extension of the output file (output.txt).\n";
+	//cout << "Input: ";
+	//getline(cin, outfilepath);
+	//cout << "You entered: " << outfilepath << endl << endl;
 
 	//Open file for reading
 	ifget.open(infilepath);
-*/
-	infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
-	outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
-	ifget.open(infilepath);
+
+	//infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
+	//outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	//ifget.open(infilepath);
 
 
 	//Catch issue with opening file
@@ -161,7 +160,7 @@ void OptFuncDef()
 
 	if (currentToken.lexeme == "function")
 	{
-		lexAdv();
+		//lexAdv();
 		FuncDef();
 	}
 	else
@@ -267,14 +266,14 @@ void Body()
 			lexAdv();
 		else
 		{
-			cout << "Syntax Error";
-			exit(-1);
+			cout << "<Body> Syntax Error";
+			//exit(-1);
 		}
 	}
 	else
 	{
-		cout << "Syntax Error";
-		exit(-1);
+		cout << "<Body> Syntax Error";
+		//exit(-1);
 	}
 }
 
@@ -292,7 +291,7 @@ void OptDecList()
 	else
 	{
 		cout << "Syntax Error";
-		exit(-1);
+		//exit(-1);
 	}
 }
 
@@ -305,7 +304,7 @@ void DecList()
 		Declaration();
 		if (currentToken.lexeme == ";")
 			lexAdv();
-			if (currentToken.lexeme != "{")
+			if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
 				DecList();
 }
 
@@ -325,12 +324,13 @@ void Qualifier()
 	if (printSwitch)
 		cout << "\t<Qualifier> ::= integer | boolean | real\n";
 
-	if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
+	if (currentToken.lexeme == "integer" || currentToken.lexeme == "true" 
+		|| currentToken.lexeme == "false" || currentToken.lexeme == "real")
 		lexAdv();
 	else
 	{
 		cout << "Oops, you broke it. Expected 'integer', 'boolean', or 'real'\n";
-		exit(-1);
+		//exit(-1);
 	}
 }
 
@@ -356,7 +356,7 @@ void StatementList()
 	if (printSwitch)
 		cout << "\t<Statement List> ::= <Statement> | <Statement> <Statement List>\n";
 
-	while (currentToken.lexeme == "if" || currentToken.lexeme == "return" || currentToken.lexeme == "write"
+	while (currentToken.lexeme == "if" || currentToken.lexeme == "return" || currentToken.lexeme == "print"
 			|| currentToken.lexeme == "read" || currentToken.lexeme == "while" || currentToken.token == "IDENTIFIER")
 	{
 		Statement();
@@ -385,8 +385,8 @@ void Statement()
 		While();
 	else
 	{
-		cout << "Error Unexpcted something.";
-		exit(-1);
+		cout << "<Statement> Error Unexpcted something.";
+		//exit(-1);
 	}
 }
 
@@ -400,6 +400,10 @@ void Compound()
 	{
 		lexAdv();
 		StatementList();
+		if (currentToken.lexeme == "}")
+		{
+			lexAdv();
+		}
 	}
 }
 
@@ -420,8 +424,8 @@ void Assign()
 				lexAdv();
 			else
 			{
-				cout << "Syntax Error";
-				exit(-1);
+				cout << "<Assign> Syntax Error";
+				//exit(-1);
 			}
 		}
 	}
@@ -432,7 +436,41 @@ void If()
 {
 	if (printSwitch)
 		cout << "\t<If> ::= if (<Condition>) <Statement> endif | if (<Condition>) <Statement> else <Statement> endif\n";
-
+	if (currentToken.lexeme == "if")
+	{
+		lexAdv();
+		if (currentToken.lexeme == "(")
+		{
+			lexAdv();
+			Condition();
+			if (currentToken.lexeme == ")")
+			{
+				lexAdv();
+				Statement();
+				if (currentToken.lexeme == "endif")
+				{
+					lexAdv();
+				}
+				else if (currentToken.lexeme == "else")
+				{
+					lexAdv();
+					Statement();
+					if (currentToken.lexeme == "endif")
+					{
+						lexAdv();
+					}
+					else
+					{
+						cout << "<If> error. Expecting endif\n";
+					}
+				}
+				else
+				{
+					cout << "<If> error. Expecting endif or else.\n";
+				}
+			}
+		}
+	}
 }
 
 
@@ -453,8 +491,8 @@ void Return()
 			lexAdv();
 		else
 		{
-			cout << "Syntax Error. Expecting ';'.";
-			exit(-1);
+			cout << "<Return> Syntax Error. Expecting ';'.";
+			//exit(-1);
 		}
 	}
 }
@@ -478,13 +516,13 @@ void Write()
 			else
 			{
 				cout << "Syntax Error. Expecting ';'";
-				exit(-1);
+				//exit(-1);
 			}
 		}
 		else
 		{
 			cout << "Syntax Error. Expecting ')'.";
-			exit(-1);
+			//exit(-1);
 		}
 	}
 }
@@ -508,13 +546,13 @@ void Read()
 			else
 			{
 				cout << "Syntax Error. Expecting ';'";
-				exit(-1);
+				//exit(-1);
 			}
 		}
 		else
 		{
 			cout << "Syntax Error. Expecting ')'.";
-			exit(-1);
+			//exit(-1);
 		}
 	}
 }
@@ -543,6 +581,10 @@ void Condition()
 {
 	if (printSwitch)
 		cout << "\t<Condition> ::= <Expression> <Relop> <Expression>\n";
+
+	Expression();
+	Relop();
+	Expression();
 }
 
 
@@ -550,6 +592,12 @@ void Relop()
 {
 	if (printSwitch)
 		cout << "\t<Relop> ::= = | /= | > | < | => | <=\n";
+
+	if (currentToken.lexeme == "=" || currentToken.lexeme == "/=" || currentToken.lexeme == ">"
+		|| currentToken.lexeme == "<" || currentToken.lexeme == "=>" || currentToken.lexeme == "<=")
+	{
+		lexAdv();
+	}
 }
 
 
@@ -557,6 +605,8 @@ void Expression()
 {
 	if (printSwitch)
 		cout << "\t<Expression> ::= <Term> <Expression Prime>\n";
+	Term();
+	ExpressionPrime();
 }
 
 
@@ -564,6 +614,27 @@ void ExpressionPrime()
 {
 	if (printSwitch)
 		cout << "\t<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>\n";
+	
+	if (currentToken.lexeme == "+")
+	{
+		lexAdv();
+		Term();
+		ExpressionPrime();
+	}
+	else if (currentToken.lexeme == "-")
+	{
+		lexAdv();
+		Term();
+		ExpressionPrime();
+	}
+	else if (currentToken.token == "UNKNOWN")
+	{
+		cout << "<Expression Prime> Error. Expecting +, -, or nothing.\n";
+	}
+	else
+	{
+		Empty();
+	}
 }
 
 
@@ -571,6 +642,9 @@ void Term()
 {
 	if (printSwitch)
 		cout << "\t<Term> ::= <Factor> <Term Prime>\n";
+	
+	Factor();
+	TermPrime();
 }
 
 
@@ -578,6 +652,27 @@ void TermPrime()
 {
 	if (printSwitch)
 		cout <<  "\t<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>\n";
+
+	if (currentToken.lexeme == "*")
+	{
+		lexAdv();
+		Factor();
+		TermPrime();
+	}
+	else if (currentToken.lexeme == "/")
+	{
+		lexAdv();
+		Factor();
+		TermPrime();
+	}
+	else if (currentToken.token == "UNKNOWN")
+	{
+		cout << "Error. Expecting *, /, or nothing.\n";
+	}
+	else
+	{
+		Empty();
+	}
 }
 
 
@@ -585,13 +680,75 @@ void Factor()
 {
 	if (printSwitch)
 		cout << "\t<Factor> ::= - <Primary> | <Primary>\n";
+
+	if (currentToken.lexeme == "-")
+	{
+		lexAdv();
+		Primary();
+	}
+	
+	if (currentToken.token != "UNKNOWN")
+	{
+		Primary();
+	}
+	
+	else
+	{
+		cout << "<Factor Error\n";
+	}
 }
 
 
 void Primary()
 {
 	if (printSwitch)
-		cout << "\t<Primary> ::= <Identifier> | <Integer> | <Idetifier> [<IDs>] | (<Expression>) | <Real> | true | false\n";
+		cout << "\t<Primary> ::= <Identifier> | <Integer> | <Identifier> [<IDs>] | (<Expression>) | <Real> | true | false\n";
+
+	if (currentToken.token == "IDENTIFIER")
+	{
+		lexAdv();
+		if (currentToken.lexeme == "[")
+		{
+			lexAdv();
+			IDs();
+			if (currentToken.lexeme == "]")
+			{
+				lexAdv();
+			}
+			else
+			{
+				cout << "<Primary> error.  Expecting ']'\n";
+			}
+		}
+	}
+	
+	else if (currentToken.token == "INTEGER" || currentToken.token == "REAL")
+	{
+		lexAdv();
+	}
+	
+	else if (currentToken.lexeme == "(")
+	{
+		lexAdv();
+		Expression();
+		if (currentToken.lexeme == ")")
+		{
+			lexAdv();
+		}
+		else
+		{
+			cout << "<Primary> error.  Expecting ')'\n";
+		}
+	}
+
+	else if (currentToken.lexeme == "true" || currentToken.lexeme == "false")
+	{
+		lexAdv();
+	}
+	else
+	{
+		cout << "<Primary> error.  Last identifer, qualifier, true, or false expected.\n";
+	}
 }
 
 
