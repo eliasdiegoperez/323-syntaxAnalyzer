@@ -2,6 +2,7 @@ $$
 function doSomething [number:true]
 {
     return 109.92*(1+1);
+    a := b - c;
 }
 
 $$

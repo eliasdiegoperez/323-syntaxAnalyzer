@@ -87,7 +87,7 @@ int main()
 	if (!ifget)
 	{
 		cout << "Error. Unable to read file." << endl;
-		system("pause");
+		//system("pause");
 		return -1;
 	}
 
@@ -113,7 +113,7 @@ int main()
      */
 	Rat16F();
 
-	system("pause");
+	//system("pause");
 	return 0;
 }
 
@@ -150,6 +150,11 @@ void Rat16F()
 			if (currentToken.lexeme == "$$")
 				cout << "The End.\n";
 		}
+	}
+	else
+	{
+		cout << "\n<><><> Syntax Error, expecting '$$'.";
+		exit(1);
 	}
 }
 
@@ -267,14 +272,14 @@ void Body()
 			lexAdv();
 		else
 		{
-			cout << "<Body> Syntax Error";
-			//exit(-1);
+			cout << "\n<><><> <Body> Syntax Error";
+			exit(1);
 		}
 	}
 	else
 	{
-		cout << "<Body> Syntax Error";
-		//exit(-1);
+		cout << "\n<><><> <Body> Syntax Error";
+		exit(1);
 	}
 }
 
@@ -291,8 +296,8 @@ void OptDecList()
 		DecList();
 	else
 	{
-		cout << "Syntax Error";
-		//exit(-1);
+		cout << "\n<><><> Syntax Error";
+		exit(1);
 	}
 }
 
@@ -330,8 +335,9 @@ void Qualifier()
 		lexAdv();
 	else
 	{
-		cout << "Oops, you broke it. Expected 'integer', 'boolean', or 'real'\n";
-		//exit(-1);
+		cout << "\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>";
+		cout << "Oops, you broke it. Expected 'integer', 'boolean', or 'real'.";
+		exit(1);
 	}
 }
 
@@ -386,8 +392,9 @@ void Statement()
 		While();
 	else
 	{
+		cout << "\n<><><><><><><><><><><><><><><><><><><>";
 		cout << "<Statement> Error Unexpcted something.";
-		//exit(-1);
+		exit(1);
 	}
 }
 
@@ -420,13 +427,13 @@ void Assign()
 		if (currentToken.lexeme == ":=")
 		{
 			lexAdv();
-			Expression();                       //assuming an advance
+			Expression();
 			if (currentToken.lexeme == ";")
 				lexAdv();
 			else
 			{
-				cout << "<Assign> Syntax Error";
-				//exit(-1);
+				cout << "\n<><><> <Assign> Syntax Error";
+				exit(1);
 			}
 		}
 	}
@@ -462,12 +469,16 @@ void If()
 					}
 					else
 					{
-						cout << "<If> error. Expecting endif\n";
+						cout << "\n<><><><><><><><><><><><><><>";
+						cout << "<If> error. Expecting 'endif'.";
+						exit(1);
 					}
 				}
 				else
 				{
-					cout << "<If> error. Expecting endif or else.\n";
+					cout << "\n<><><><><><><><><><><><><><><><><><><><>";
+					cout << "<If> error. Expecting 'endif' or 'else'.";
+					exit(1);
 				}
 			}
 		}
@@ -492,8 +503,8 @@ void Return()
 			lexAdv();
 		else
 		{
-			cout << "<Return> Syntax Error. Expecting ';'.";
-			//exit(-1);
+			cout << "\n<><><> <Return> Syntax Error. Expecting ';'.";
+			exit(1);
 		}
 	}
 }
@@ -516,14 +527,14 @@ void Write()
 				lexAdv();
 			else
 			{
-				cout << "Syntax Error. Expecting ';'";
-				//exit(-1);
+				cout << "\n<><><> Syntax Error. Expecting ';'";
+				exit(1);
 			}
 		}
 		else
 		{
-			cout << "Syntax Error. Expecting ')'.";
-			//exit(-1);
+			cout << "\n<><><> Syntax Error. Expecting ')'.";
+			exit(1);
 		}
 	}
 }
@@ -546,14 +557,14 @@ void Read()
 				lexAdv();
 			else
 			{
-				cout << "Syntax Error. Expecting ';'";
-				//exit(-1);
+				cout << "\n<><><> Syntax Error. Expecting ';'";
+				exit(1);
 			}
 		}
 		else
 		{
-			cout << "Syntax Error. Expecting ')'.";
-			//exit(-1);
+			cout << "\n<><><> Syntax Error. Expecting ')'.";
+			exit(1);
 		}
 	}
 }
@@ -616,13 +627,7 @@ void ExpressionPrime()
 	if (printSwitch)
 		cout << "\t<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>\n";
 	
-	if (currentToken.lexeme == "+")
-	{
-		lexAdv();
-		Term();
-		ExpressionPrime();
-	}
-	else if (currentToken.lexeme == "-")
+	if (currentToken.lexeme == "+" || currentToken.lexeme == "-")
 	{
 		lexAdv();
 		Term();
@@ -654,13 +659,7 @@ void TermPrime()
 	if (printSwitch)
 		cout <<  "\t<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>\n";
 
-	if (currentToken.lexeme == "*")
-	{
-		lexAdv();
-		Factor();
-		TermPrime();
-	}
-	else if (currentToken.lexeme == "/")
+	if (currentToken.lexeme == "*" || currentToken.lexeme == "/")
 	{
 		lexAdv();
 		Factor();
@@ -668,7 +667,9 @@ void TermPrime()
 	}
 	else if (currentToken.token == "UNKNOWN")
 	{
-		cout << "Error. Expecting *, /, or nothing.\n";
+		cout << "\n<><><><><><><><><><><><><><><><><><>";
+		cout << "Error. Expecting '*', '/', or 'Empty'.";
+		exit(1);
 	}
 	else
 	{
@@ -695,7 +696,9 @@ void Factor()
 	
 	else
 	{
-		cout << "<Factor Error\n";
+		cout << "\n<><><><><><><><>";
+		cout << "<Factor> Error";
+		exit(1);
 	}
 }
 
@@ -718,7 +721,9 @@ void Primary()
 			}
 			else
 			{
-				cout << "<Primary> error.  Expecting ']'\n";
+				cout << "\n<><><><><><><><><><><><><><><>";
+				cout << "<Primary> error.  Expecting ']'";
+				exit(1);
 			}
 		}
 	}
@@ -738,7 +743,9 @@ void Primary()
 		}
 		else
 		{
-			cout << "<Primary> error.  Expecting ')'\n";
+			cout << "\n<><><><><><><><><><><><><><><><>";
+			cout << "<Primary> error.  Expecting ')'";
+			exit(1);
 		}
 	}
 
@@ -748,7 +755,9 @@ void Primary()
 	}
 	else
 	{
-		cout << "<Primary> error.  Last identifer, qualifier, true, or false expected.\n";
+		cout << "\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>";
+		cout << "<Primary> error. '<Identifer>', '<Qualifier>', 'true', or 'false' expected.";
+		exit(1);
 	}
 }
 
