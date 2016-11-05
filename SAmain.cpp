@@ -59,7 +59,7 @@ int main()
 	string				    infilepath = "";
 	string				    outfilepath = "";
 
-
+	/*
 	//Input file to read from
 	cout << "Before you begin, make sure the input test file is in\nthe same folder as the .exe of this program.\n";
 	cout << "----------------------------------------------------------------------\n";
@@ -73,13 +73,14 @@ int main()
 	//cout << "Input: ";
 	//getline(cin, outfilepath);
 	//cout << "You entered: " << outfilepath << endl << endl;
+	*/
 
 	//Open file for reading
-	ifget.open(infilepath);
-
-	//infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
-	//outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
 	//ifget.open(infilepath);
+
+	infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
+	outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	ifget.open(infilepath);
 
 
 	//Catch issue with opening file
