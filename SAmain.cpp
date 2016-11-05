@@ -230,7 +230,7 @@ void ParamList()
 
 	if (currentToken.token == "IDENTIFIER")
 	{
-		lexAdv();
+		Parameter();
 		if (currentToken.lexeme == ",")
 		{
 			lexAdv();
@@ -263,6 +263,13 @@ void Body()
 	{
 		lexAdv();
 		StatementList();
+		if (currentToken.lexeme == "}")
+			lexAdv();
+		else
+		{
+			cout << "Syntax Error";
+			exit(-1);
+		}
 	}
 	else
 	{
@@ -349,25 +356,11 @@ void StatementList()
 	if (printSwitch)
 		cout << "\t<Statement List> ::= <Statement> | <Statement> <Statement List>\n";
 
-
-
-/*
-	if (currentToken.token == "IDENTIFIER")
+	while (currentToken.lexeme == "if" || currentToken.lexeme == "return" || currentToken.lexeme == "write"
+			|| currentToken.lexeme == "read" || currentToken.lexeme == "while" || currentToken.token == "IDENTIFIER")
 	{
-		lexAdv();
-		if (currentToken.lexeme == "[")
-		{
-			lexAdv();
-			OptParamList();
-			if (currentToken.lexeme == "]")
-			{
-				lexAdv();
-				OptDecList();
-				Body();
-			}
-		}
+		Statement();
 	}
-*/
 }
 
 
@@ -375,6 +368,26 @@ void Statement()
 {
 	if (printSwitch)
 		cout << "\t<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Write> | <Read> | <While>\n";
+
+	if (currentToken.lexeme == "{")
+		Compound();
+	else if (currentToken.token == "IDENTIFIER")
+		Assign();
+	else if (currentToken.lexeme == "if")
+		If();
+	else if (currentToken.lexeme == "return")
+		Return();
+	else if (currentToken.lexeme == "print")
+		Write();
+	else if (currentToken.lexeme == "read")
+		Read();
+	else if (currentToken.lexeme == "while")
+		While();
+	else
+	{
+		cout << "Error Unexpcted something.";
+		exit(-1);
+	}
 }
 
 
@@ -382,6 +395,12 @@ void Compound()
 {
 	if (printSwitch)
 		cout << "\t<Compound> ::= {<Statement List>}\n";
+
+	if (currentToken.lexeme == "{")
+	{
+		lexAdv();
+		StatementList();
+	}
 }
 
 
@@ -389,6 +408,23 @@ void Assign()
 {
 	if (printSwitch)
 		cout << "\t<Assign> ::= <Identifier> := <Expression>;\n";
+
+	if (currentToken.token == "IDENTIFIER")
+	{
+		lexAdv();
+		if (currentToken.lexeme == ":=")
+		{
+			lexAdv();
+			Expression();                       //assuming an advance
+			if (currentToken.lexeme == ";")
+				lexAdv();
+			else
+			{
+				cout << "Syntax Error";
+				exit(-1);
+			}
+		}
+	}
 }
 
 
@@ -396,6 +432,7 @@ void If()
 {
 	if (printSwitch)
 		cout << "\t<If> ::= if (<Condition>) <Statement> endif | if (<Condition>) <Statement> else <Statement> endif\n";
+
 }
 
 
@@ -403,6 +440,23 @@ void Return()
 {
 	if (printSwitch)
 		cout << "\t<Return> ::= return; | return <Expression>;\n";
+
+	lexAdv();
+	if (currentToken.lexeme == ";")
+	{
+		lexAdv();
+	}
+	else
+	{
+		Expression();
+		if (currentToken.lexeme == ";")
+			lexAdv();
+		else
+		{
+			cout << "Syntax Error. Expecting ';'.";
+			exit(-1);
+		}
+	}
 }
 
 
@@ -410,6 +464,29 @@ void Write()
 {
 	if (printSwitch)
 		cout << "\t<Write> ::= print (<Expressions>);\n";
+
+	lexAdv();
+	if (currentToken.lexeme == "(")
+	{
+		lexAdv();
+		Expression();
+		if (currentToken.lexeme == ")")
+		{
+			lexAdv();
+			if (currentToken.lexeme == ";")
+				lexAdv();
+			else
+			{
+				cout << "Syntax Error. Expecting ';'";
+				exit(-1);
+			}
+		}
+		else
+		{
+			cout << "Syntax Error. Expecting ')'.";
+			exit(-1);
+		}
+	}
 }
 
 
@@ -417,6 +494,29 @@ void Read()
 {
 	if (printSwitch)
 		cout << "\t<Read> ::= read (<IDs>);\n";
+
+	lexAdv();
+	if (currentToken.lexeme == "(")
+	{
+		lexAdv();
+		IDs();
+		if (currentToken.lexeme == ")")
+		{
+			lexAdv();
+			if (currentToken.lexeme == ";")
+				lexAdv();
+			else
+			{
+				cout << "Syntax Error. Expecting ';'";
+				exit(-1);
+			}
+		}
+		else
+		{
+			cout << "Syntax Error. Expecting ')'.";
+			exit(-1);
+		}
+	}
 }
 
 
@@ -424,6 +524,18 @@ void While()
 {
 	if (printSwitch)
 		cout << "\t<While> ::= while (<Condition>) <Statement>\n";
+
+	lexAdv();
+	if (currentToken.lexeme == "(")
+	{
+		lexAdv();
+		Condition();
+		if (currentToken.lexeme == ")")
+		{
+			lexAdv();
+			Statement();
+		}
+	}
 }
 
 
