@@ -267,6 +267,7 @@ void ParamList()
 			lexAdv();
 			ParamList();
 		}
+		//TODO: Not sure if there should be a Syntax Error here.
 	}
 }
 
@@ -281,6 +282,11 @@ void Parameter()
 	{
 		lexAdv();
 		Qualifier();
+	}
+	else
+	{
+		cout << "\n<><><> Syntax Error, expecting ':' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		exit(1);
 	}
 }
 
@@ -322,7 +328,7 @@ void OptDecList()
 		DecList();
 	else
 	{
-		cout << "\n<><><> Syntax Error";
+		cout << "\n<><><> Syntax Error, expecting '{' before '" << currentToken.lexeme << "' on line: " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -361,8 +367,7 @@ void Qualifier()
 		lexAdv();
 	else
 	{
-		cout << "\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>";
-		cout << "Oops, you broke it. Expected 'integer', 'boolean', or 'real'.";
+		cout << "\n<><><> Syntax Error, expecting 'integer', 'boolean', or 'real' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
