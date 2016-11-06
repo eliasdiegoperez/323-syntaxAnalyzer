@@ -14,12 +14,15 @@ Assignment 2 - Syntax Analyzer
 #include <iomanip>
 using namespace std;
 
+
 //These will be placed inside the vector
 struct tokenData
 {
-	string token;  //generic
-	string lexeme; //instance
+	string  token;  //generic
+	string  lexeme; //instance
+	int     lineNumber;
 };
+
 
 //Transition table for the ID FSM (Zero-Based)
 //Acceptance states: 1, 2, 4
@@ -32,6 +35,7 @@ const int FSM_ID_Table[6][3] = {
 	5, 5, 5
 };
 
+
 //Transition table for the Digit FSM (Zero-Based)
 //Acceptance states: 1, 3
 const int FSM_Digit_Table[5][2] = {
@@ -42,6 +46,7 @@ const int FSM_Digit_Table[5][2] = {
 	4, 4
 };
 
+
 //Reserved keyword list
 string keywords[13] = { "function", "integer", "boolean", "real", "if", "endif",
 "else", "return", "print", "read", "while", "true", "false" };
@@ -51,6 +56,7 @@ string operators[11] = { ":=", "=", "/=", ">", "<", "=>", "<=", "+", "-", "*", "
 
 //Reserved separator list
 string separators[11] = { "$$", ",", ":", ";", "|", "(", ")", "[", "]", "{", "}" };
+
 
 class LA
 {
@@ -65,7 +71,7 @@ public:
 	int					get_intReal_column(char input);
 	void				printHeader(string outfilepath);
 	void				printTokens(vector<tokenData> & tokens, string outfilepath);
-	vector<tokenData>	lexer(string inputString);
+	vector<tokenData>	lexer(string inputString, int currentLineNumber);
 
 	//Enumeration for ID_FSM
 	enum id_columns
@@ -78,17 +84,12 @@ public:
 	{
 		INT_REAL_DIGIT, PERIOD
 	};
-
-	
-
 };
 
 
 
-
-
 //Lexer function to break apart source code into different tokens
-vector<tokenData> LA::lexer(string inputString)
+vector<tokenData> LA::lexer(string inputString, int currentLineNumber)
 {
 	bool				found = false;
 	char				currentChar;
@@ -129,13 +130,13 @@ vector<tokenData> LA::lexer(string inputString)
 					temp.token = "UNKNOWN";
 
 				temp.lexeme = currentToken;
+				temp.lineNumber = currentLineNumber;
 				tokens.insert(tokens.end(), temp);
 				currentToken.clear();
 				column = 0;
 				currentState = 0;
 			}
 		}
-
 
 		//If first character in token is digit, use Digit FSM
 		else if (((currentToken.empty() && isdigit(inputString[i]))
@@ -145,7 +146,6 @@ vector<tokenData> LA::lexer(string inputString)
 			currentToken += currentChar;
 			column = get_intReal_column(currentChar);
 			currentState = FSM_Digit_Table[currentState][column];
-
 
 			//If end of string is reached, or if a space is reached, or if a non-digit/non-period is reached: then end of token
 			if (i == inputString.length() - 1 										//end of string is reached
@@ -165,7 +165,6 @@ vector<tokenData> LA::lexer(string inputString)
 					currentState = 2;
 				}
 
-
 				if (currentState == 1 || currentState == 3)
 				{
 					if (checkIfReal(currentToken))
@@ -178,15 +177,14 @@ vector<tokenData> LA::lexer(string inputString)
 					temp.token = "UNKNOWN";
 				}
 
-
 				temp.lexeme = currentToken;
+				temp.lineNumber = currentLineNumber;
 				tokens.insert(tokens.end(), temp);
 				currentToken.clear();
 				column = 0;
 				currentState = 0;
 			}
 		}
-
 
 		else if (isspace(inputString[i]) || inputString[i] == '\t' || inputString[i] == '\n')
 		{
@@ -220,6 +218,7 @@ vector<tokenData> LA::lexer(string inputString)
 						}
 						temp.token = "OPERATOR";
 						temp.lexeme = currentToken;
+						temp.lineNumber = currentLineNumber;
 						tokens.insert(tokens.end(), temp);
 						currentToken.clear();
 						found = true;
@@ -234,6 +233,7 @@ vector<tokenData> LA::lexer(string inputString)
 					{
 						temp.token = "OPERATOR";
 						temp.lexeme = currentToken + inputString[i + 1];
+						temp.lineNumber = currentLineNumber;
 						tokens.insert(tokens.end(), temp);
 						currentToken.clear();
 						i++;
@@ -248,6 +248,7 @@ vector<tokenData> LA::lexer(string inputString)
 					{
 						temp.token = "SEPARATOR";
 						temp.lexeme = currentToken;
+						temp.lineNumber = currentLineNumber;
 						tokens.insert(tokens.end(), temp);
 						currentToken.clear();
 						found = true;
@@ -262,6 +263,7 @@ vector<tokenData> LA::lexer(string inputString)
 					{
 						temp.token = "SEPARATOR";
 						temp.lexeme = currentToken + inputString[i + 1];
+						temp.lineNumber = currentLineNumber;
 						tokens.insert(tokens.end(), temp);
 						currentToken.clear();
 						i++;
@@ -269,25 +271,26 @@ vector<tokenData> LA::lexer(string inputString)
 					}
 				}
 
-
 				if (!found)
 				{
 					temp.token = "UNKNOWN";
 					temp.lexeme = currentToken;
+					temp.lineNumber = currentLineNumber;
 					tokens.insert(tokens.end(), temp);
 					currentToken.clear();
 				}
 			}
-
 		}
 	}
 	return tokens;
 }
 
-LA::LA()
+
+LA::LA()                //What is this here for?
 {
 
 };
+
 
 //Checks if first character of string is a letter
 bool LA::doesTokenStartWithAlpha(string currentToken)
@@ -327,6 +330,7 @@ int LA::get_intReal_column(char input)
 
 	return column;;
 }
+
 
 //Linear search through the keywords array to check for value
 bool LA::checkIfKeyword(string currentToken)

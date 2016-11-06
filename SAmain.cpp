@@ -44,15 +44,16 @@ void Empty();
 void lexAdv();
 
 
+int                     lineNumber = 0;
 int                     tokenIndex = 0;             //Index used to step through token vector
 bool                    printSwitch = true;
 vector<tokenData>       tokens;                     //vector to hold tokens as they are being inputted
 vector<tokenData>       tokenList;                  //vector that holds all tokens once they have been read in initially
 tokenData               currentToken;
 
+
 int main() 
 {
-	bool				    wroteHeader = true;     //NOT NEEDED ANYMORE?
 	ifstream			    ifget;
 	LA                      lex;
 	string				    current = "";
@@ -94,13 +95,8 @@ int main()
 	//While not end of file, read every line.
 	while (getline(ifget, current))
 	{
-		if (!wroteHeader)
-		{
-			lex.printHeader(outfilepath);
-			wroteHeader = true;
-		}
-
-		tokens = lex.lexer(current);
+		lineNumber++;
+		tokens = lex.lexer(current, lineNumber);
 		tokenList.insert(tokenList.end(), tokens.begin(), tokens.end());
 		tokens.clear();
 	}
@@ -108,9 +104,6 @@ int main()
 	ifget.close();
 	//lex.printTokens(tokenList, outfilepath);
 
-    /*
-     * New stuff goes here
-     */
 	Rat16F();
 
 	//system("pause");
@@ -149,11 +142,21 @@ void Rat16F()
 			StatementList();
 			if (currentToken.lexeme == "$$")
 				cout << "The End.\n";
+			else
+			{
+				cout << "\n<><><> Syntax Error, expecting last '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				exit(1);
+			}
+		}
+		else
+		{
+			cout << "\n<><><> Syntax Error, expecting second '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			exit(1);
 		}
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting '$$'.";
+		cout << "\n<><><> Syntax Error, expecting first '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -165,12 +168,15 @@ void OptFuncDef()
 		cout << "\t<Opt Function Definition> ::= <Function Definitions> | <Empty>\n";
 
 	if (currentToken.lexeme == "function")
-	{
-		//lexAdv();
 		FuncDef();
-	}
-	else
+	else if (currentToken.lexeme == "$$")
 		Empty();
+	else
+	{
+		cout << "\n<><><> Syntax Error, expecting 'function' or '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		exit(1);
+	}
+
 }
 
 
@@ -206,7 +212,22 @@ void Func()
 				OptDecList();
 				Body();
 			}
+			else
+			{
+				cout << "\n<><><> Syntax Error, expecting ']' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				exit(1);
+			}
 		}
+		else
+		{
+			cout << "\n<><><> Syntax Error, expecting '[' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			exit(1);
+		}
+	}
+	else
+	{
+		cout << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		exit(1);
 	}
 }
 
@@ -220,9 +241,14 @@ void OptParamList()
 	{
 		ParamList();
 	}
-	else
+	else if (currentToken.lexeme == "]")
 	{
 		Empty();
+	}
+	else
+	{
+		cout << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		exit(1);
 	}
 }
 
