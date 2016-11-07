@@ -345,12 +345,6 @@ void DecList()
 			lexAdv();
 			if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
 				DecList();
-			else
-			{
-				//cout << "\n<><><> Syntax Error, expecting 'integer', 'boolean', or 'real' before '" << currentToken.lexeme << "' on line "
-				     //<< currentToken.lineNumber;
-				//exit(1);
-			}
 		}
 		else if (currentToken.token == "IDENTIFIER")
 		{
@@ -405,12 +399,6 @@ void IDs()
 			lexAdv();
 			IDs();
 		}
-		else
-		{
-			//TODO: Cannot get this error to catch correctly. If the error is on line 9, then it messes up line 2 as well.
-			//cout << "\n<><><> Syntax Error, expecting ',' or ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
-			//exit(1);
-		}
 	}
 	else
 	{
@@ -453,8 +441,7 @@ void Statement()
 		While();
 	else
 	{
-		cout << "\n<><><><><><><><><><><><><><><><><><><>";
-		cout << "<Statement> Error Unexpcted something.";
+		cout << "\n<><><> Syntax Error, expecting proper '<Statement>' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -520,32 +507,53 @@ void If()
 			if (currentToken.lexeme == ")")
 			{
 				lexAdv();
-				Statement();
-				if (currentToken.lexeme == "endif")
-				{
-					lexAdv();
-				}
-				else if (currentToken.lexeme == "else")
+				if (currentToken.lexeme == "{")
 				{
 					lexAdv();
 					Statement();
-					if (currentToken.lexeme == "endif")
+					if (currentToken.lexeme == "}")
 					{
 						lexAdv();
+						if (currentToken.lexeme == "endif")
+						{
+							lexAdv();
+						}
+						else if (currentToken.lexeme == "else")
+						{
+							lexAdv();
+							Statement();
+							if (currentToken.lexeme == "endif")
+							{
+								lexAdv();
+							}
+							else
+							{
+								cout << "\n<><><> Syntax Error, expecting 'endif' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+								exit(1);
+							}
+						}
+						else
+						{
+							cout << "\n<><><> Syntax Error, expecting 'endif' or 'else' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+							exit(1);
+						}
 					}
 					else
 					{
-						cout << "\n<><><><><><><><><><><><><><>";
-						cout << "<If> error. Expecting 'endif'.";
+						cout << "\nSyntax Error, expecting '}' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 						exit(1);
 					}
 				}
 				else
 				{
-					cout << "\n<><><><><><><><><><><><><><><><><><><><>";
-					cout << "<If> error. Expecting 'endif' or 'else'.";
+					cout << "\n<><><> Syntax Error, expecting '{' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 					exit(1);
 				}
+			}
+			else
+			{
+				cout << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				exit(1);
 			}
 		}
 		else
@@ -574,7 +582,7 @@ void Return()
 			lexAdv();
 		else
 		{
-			cout << "\n<><><> <Return> Syntax Error. Expecting ';'.";
+			cout << "\n<><><> Syntax Error, expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
@@ -598,15 +606,20 @@ void Write()
 				lexAdv();
 			else
 			{
-				cout << "\n<><><> Syntax Error. Expecting ';'";
+				cout << "\n<><><> Syntax Error, expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error. Expecting ')'.";
+			cout << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
+	}
+	else
+	{
+		cout << "\n<><><> Syntax Error, expecting '(' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		exit(1);
 	}
 }
 
@@ -686,6 +699,7 @@ void Relop()
 	{
 		lexAdv();
 	}
+	//TODO: Do we need a catch here for a syntax error?
 }
 
 
@@ -703,7 +717,7 @@ void ExpressionPrime()
 {
 	if (printSwitch)
 		cout << "\t<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>\n";
-	
+
 	if (currentToken.lexeme == "+" || currentToken.lexeme == "-")
 	{
 		lexAdv();
@@ -712,7 +726,8 @@ void ExpressionPrime()
 	}
 	else if (currentToken.token == "UNKNOWN")
 	{
-		cout << "<Expression Prime> Error. Expecting +, -, or nothing.\n";
+		cout << "\n<><><> Syntax error, expecting '+', '-', or nothing before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		exit(1);
 	}
 	else
 	{
@@ -744,8 +759,7 @@ void TermPrime()
 	}
 	else if (currentToken.token == "UNKNOWN")
 	{
-		cout << "\n<><><><><><><><><><><><><><><><><><>";
-		cout << "Error. Expecting '*', '/', or 'Empty'.";
+		cout << "\n<><><> Syntax Error, expecting '*', '/', or 'Empty' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 	else
@@ -773,8 +787,7 @@ void Factor()
 	
 	else
 	{
-		cout << "\n<><><><><><><><>";
-		cout << "<Factor> Error";
+		cout << "\n<><><> Syntax Error, expecting something different before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
