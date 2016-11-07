@@ -50,17 +50,19 @@ bool                    printSwitch = true;
 vector<tokenData>       tokens;                     //vector to hold tokens as they are being inputted
 vector<tokenData>       tokenList;                  //vector that holds all tokens once they have been read in initially
 tokenData               currentToken;
+ifstream			    ifget;
+ofstream				oftrace;
 
 
 int main() 
 {
-	ifstream			    ifget;
+
 	LA                      lex;
 	string				    current = "";
 	string				    infilepath = "";
 	string				    outfilepath = "";
-
-	/*
+	
+	
 	//Input file to read from
 	cout << "Before you begin, make sure the input test file is in\nthe same folder as the .exe of this program.\n";
 	cout << "----------------------------------------------------------------------\n";
@@ -70,19 +72,19 @@ int main()
 	cout << "You entered: " << infilepath << endl << endl;
 
 	//Output file to write to
-	//cout << "Please enter the file and extension of the output file (output.txt).\n";
-	//cout << "Input: ";
-	//getline(cin, outfilepath);
-	//cout << "You entered: " << outfilepath << endl << endl;
-	*/
+	cout << "Please enter the file and extension of the output file (output.txt).\n";
+	cout << "Input: ";
+	getline(cin, outfilepath);
+	cout << "You entered: " << outfilepath << endl << endl;
+	
 
-	//Open file for reading
-	//infilepath = "test.txt";
-	//ifget.open(infilepath);
 
-	infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
-	outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
 	ifget.open(infilepath);
+	oftrace.open(outfilepath);
+
+	//infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
+	//outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	//ifget.open(infilepath);
 
 
 	//Catch issue with opening file
@@ -103,11 +105,13 @@ int main()
 	}
 
 	ifget.close();
-	//lex.printTokens(tokenList, outfilepath);
+	
+
 
 	Rat16F();
-
-	//system("pause");
+	oftrace.close();
+	cout << "Results printed in output file.\n";
+	system("pause");
 	return 0;
 }
 
@@ -118,7 +122,7 @@ void lexAdv() {
 		currentToken = tokenList[tokenIndex];
 		if (printSwitch)
 		{
-			cout << left << setw(7) << "\nToken: " << left << setw(20) << currentToken.token
+			oftrace << "\nToken: " << left << setw(20) << currentToken.token
 				 << left << setw(8) << "Lexeme: " << left << setw(20) << currentToken.lexeme << endl;
 		}
 		tokenIndex++;
@@ -130,7 +134,7 @@ void Rat16F()
 {
 	lexAdv();
 	if (printSwitch)
-		cout << "\t<Rat16F> ::= $$ <Opt Function Definitions>\n\t\t\t\t $$ <Opt Declaration List> <Statement List> $$\n";
+		oftrace << "\t<Rat16F> ::= $$ <Opt Function Definitions>\n\t\t\t\t $$ <Opt Declaration List> <Statement List> $$\n";
 
 	if (currentToken.lexeme == "$$")
 	{
@@ -142,22 +146,22 @@ void Rat16F()
 			OptDecList();
 			StatementList();
 			if (currentToken.lexeme == "$$")
-				cout << "The End.\n";
+				oftrace << "The End.\n";
 			else
 			{
-				cout << "\n<><><> Syntax Error, expecting last '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				oftrace << "\n<><><> Syntax Error, expecting last '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting second '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting second '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting first '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting first '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -166,7 +170,7 @@ void Rat16F()
 void OptFuncDef()
 {
 	if (printSwitch)
-		cout << "\t<Opt Function Definition> ::= <Function Definitions> | <Empty>\n";
+		oftrace << "\t<Opt Function Definition> ::= <Function Definitions> | <Empty>\n";
 
 	if (currentToken.lexeme == "function")
 		FuncDef();
@@ -174,7 +178,7 @@ void OptFuncDef()
 		Empty();
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting 'function' or '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting 'function' or '$$' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 
@@ -184,7 +188,7 @@ void OptFuncDef()
 void FuncDef()
 {
 	if (printSwitch)
-		cout << "\t<Function Definitions> ::= <Function> | <Function> <Function Definitions>\n";
+		oftrace << "\t<Function Definitions> ::= <Function> | <Function> <Function Definitions>\n";
 
 	while (currentToken.lexeme == "function")
 	{
@@ -196,7 +200,7 @@ void FuncDef()
 void Func()
 {
 	if (printSwitch)
-		cout << "\t<Function> ::= function <Identifier> [ <Opt Paramenter List> ] <Opt Declaration List> <Body>\n";
+		oftrace << "\t<Function> ::= function <Identifier> [ <Opt Paramenter List> ] <Opt Declaration List> <Body>\n";
 
 	lexAdv();
 
@@ -215,19 +219,19 @@ void Func()
 			}
 			else
 			{
-				cout << "\n<><><> Syntax Error, expecting ']' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				oftrace << "\n<><><> Syntax Error, expecting ']' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting '[' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting '[' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -236,7 +240,7 @@ void Func()
 void OptParamList()
 {
 	if (printSwitch)
-		cout << "\t<Opt Parameter List> ::= <Parameter List> | <Empty>\n";
+		oftrace << "\t<Opt Parameter List> ::= <Parameter List> | <Empty>\n";
 
 	if (currentToken.token == "IDENTIFIER")
 	{
@@ -248,7 +252,7 @@ void OptParamList()
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -257,7 +261,7 @@ void OptParamList()
 void ParamList()
 {
 	if (printSwitch)
-		cout << "\t<Parameter List> ::= <Parameter> | <Parameter>, <Parameter List>\n";
+		oftrace << "\t<Parameter List> ::= <Parameter> | <Parameter>, <Parameter List>\n";
 
 
 	if (currentToken.token == "IDENTIFIER")
@@ -275,7 +279,7 @@ void ParamList()
 void Parameter()
 {
 	if (printSwitch)
-		cout << "\t<Parameter> ::= <IDs> : <Qualifier>\n";
+		oftrace << "\t<Parameter> ::= <IDs> : <Qualifier>\n";
 
 	IDs();
 	if (currentToken.lexeme == ":")
@@ -285,7 +289,7 @@ void Parameter()
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting ':' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting ':' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -294,7 +298,7 @@ void Parameter()
 void Body()
 {
 	if (printSwitch)
-		cout << "\t<Body> ::= { <Statement List> }\n";
+		oftrace << "\t<Body> ::= { <Statement List> }\n";
 
 	if (currentToken.lexeme == "{")
 	{
@@ -304,13 +308,13 @@ void Body()
 			lexAdv();
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting '}' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting '}' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting '{' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting '{' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -319,7 +323,7 @@ void Body()
 void OptDecList()
 {
 	if (printSwitch)
-		cout << "\t<Opt Declaration List> ::= <Declaration List> | <Empty>\n";
+		oftrace << "\t<Opt Declaration List> ::= <Declaration List> | <Empty>\n";
 
 
 	if (currentToken.lexeme == "{")
@@ -328,7 +332,7 @@ void OptDecList()
 		DecList();
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting 'integer', 'boolean', or 'real' before '" << currentToken.lexeme << "' on line: " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting 'integer', 'boolean', or 'real' before '" << currentToken.lexeme << "' on line: " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -337,7 +341,7 @@ void OptDecList()
 void DecList()
 {
 	if (printSwitch)
-		cout << "\t<Declaration List> ::= <Declaration>; | <Declaration> ; <Declaration List>\n";
+		oftrace << "\t<Declaration List> ::= <Declaration>; | <Declaration> ; <Declaration List>\n";
 
 		Declaration();
 		if (currentToken.lexeme == ";")
@@ -348,7 +352,7 @@ void DecList()
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting ';' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting ';' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 }
@@ -357,7 +361,7 @@ void DecList()
 void Declaration()
 {
 	if (printSwitch)
-		cout << "\t<Declaration> ::= <Qualifier> <IDs>\n";
+		oftrace << "\t<Declaration> ::= <Qualifier> <IDs>\n";
 
 	Qualifier();
 	IDs();
@@ -367,14 +371,14 @@ void Declaration()
 void Qualifier()
 {
 	if (printSwitch)
-		cout << "\t<Qualifier> ::= integer | boolean | real\n";
+		oftrace << "\t<Qualifier> ::= integer | boolean | real\n";
 
 	if (currentToken.lexeme == "integer" || currentToken.lexeme == "true" 
 		|| currentToken.lexeme == "false" || currentToken.lexeme == "real")
 		lexAdv();
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting 'integer', 'boolean', or 'real' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting 'integer', 'boolean', or 'real' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -383,7 +387,7 @@ void Qualifier()
 void IDs()
 {
 	if (printSwitch)
-		cout << "\t<IDs> ::= <Identifier> | <Identifier>, <IDs>\n";
+		oftrace << "\t<IDs> ::= <Identifier> | <Identifier>, <IDs>\n";
 
 	if (currentToken.token == "IDENTIFIER")
 	{
@@ -395,13 +399,13 @@ void IDs()
 		}
 		else if (currentToken.token == "IDENTIFIER")
 		{
-			cout << "\n<><><> Syntax Error, expecting ',' between multiple identifiers on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting ',' between multiple identifiers on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -409,7 +413,7 @@ void IDs()
 void StatementList()
 {
 	if (printSwitch)
-		cout << "\t<Statement List> ::= <Statement> | <Statement> <Statement List>\n";
+		oftrace << "\t<Statement List> ::= <Statement> | <Statement> <Statement List>\n";
 
 	while (currentToken.lexeme == "if" || currentToken.lexeme == "return" || currentToken.lexeme == "print"
 			|| currentToken.lexeme == "read" || currentToken.lexeme == "while" || currentToken.token == "IDENTIFIER")
@@ -422,7 +426,7 @@ void StatementList()
 void Statement()
 {
 	if (printSwitch)
-		cout << "\t<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Write> | <Read> | <While>\n";
+		oftrace << "\t<Statement> ::= <Compound> | <Assign> | <If> | <Return> | <Write> | <Read> | <While>\n";
 
 	if (currentToken.lexeme == "{")
 		Compound();
@@ -440,7 +444,7 @@ void Statement()
 		While();
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting proper '<Statement>' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting proper '<Statement>' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -449,7 +453,7 @@ void Statement()
 void Compound()
 {
 	if (printSwitch)
-		cout << "\t<Compound> ::= {<Statement List>}\n";
+		oftrace << "\t<Compound> ::= {<Statement List>}\n";
 
 	if (currentToken.lexeme == "{")
 	{
@@ -466,7 +470,7 @@ void Compound()
 void Assign()
 {
 	if (printSwitch)
-		cout << "\t<Assign> ::= <Identifier> := <Expression>;\n";
+		oftrace << "\t<Assign> ::= <Identifier> := <Expression>;\n";
 
 	if (currentToken.token == "IDENTIFIER")
 	{
@@ -479,25 +483,23 @@ void Assign()
 				lexAdv();
 			else
 			{
-				cout << "\n<><><> <Assign> Syntax Error";
+				oftrace << "\n<><><> <Assign> Syntax Error";
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting ':=' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting ':=' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
 }
 
-//TODO RESPONSE: Reverted If() to before '{' and '}' checks were added.  Compound() already did that.
-				//Before reverting If(), SA would break if there was more than one statement in the braces 
-				//following the if statement, and it shouldn't break.
+
 void If()
 {
 	if (printSwitch)
-		cout << "\t<If> ::= if (<Condition>) <Statement> endif | if (<Condition>) <Statement> else <Statement> endif\n";
+		oftrace << "\t<If> ::= if (<Condition>) <Statement> endif | if (<Condition>) <Statement> else <Statement> endif\n";
 	if (currentToken.lexeme == "if")
 	{
 		lexAdv();
@@ -523,25 +525,25 @@ void If()
 					}
 					else
 					{
-						cout << "\n<><><> Syntax Error, expecting 'endif' on line " << currentToken.lineNumber;
+						oftrace << "\n<><><> Syntax Error, expecting 'endif' on line " << currentToken.lineNumber;
 						exit(1);
 					}
 				}
 				else
 				{
-					cout << "\n<><><> Syntax Error, expecting 'endif' or 'else' on line " << currentToken.lineNumber;
+					oftrace << "\n<><><> Syntax Error, expecting 'endif' or 'else' on line " << currentToken.lineNumber;
 					exit(1);
 				}
 			}
 			else
 			{
-				cout << "\n<><><> Syntax Error, expecting ) after <Condition> on line " << currentToken.lineNumber;
+				oftrace << "\n<><><> Syntax Error, expecting ) after <Condition> on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting ( on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting ( on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
@@ -551,7 +553,7 @@ void If()
 void Return()
 {
 	if (printSwitch)
-		cout << "\t<Return> ::= return; | return <Expression>;\n";
+		oftrace << "\t<Return> ::= return; | return <Expression>;\n";
 
 	lexAdv();
 	if (currentToken.lexeme == ";")
@@ -565,7 +567,7 @@ void Return()
 			lexAdv();
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
@@ -575,7 +577,7 @@ void Return()
 void Write()
 {
 	if (printSwitch)
-		cout << "\t<Write> ::= print (<Expressions>);\n";
+		oftrace << "\t<Write> ::= print (<Expressions>);\n";
 
 	lexAdv();
 	if (currentToken.lexeme == "(")
@@ -589,19 +591,19 @@ void Write()
 				lexAdv();
 			else
 			{
-				cout << "\n<><><> Syntax Error, expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				oftrace << "\n<><><> Syntax Error, expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting '(' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting '(' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -610,7 +612,7 @@ void Write()
 void Read()
 {
 	if (printSwitch)
-		cout << "\t<Read> ::= read (<IDs>);\n";
+		oftrace << "\t<Read> ::= read (<IDs>);\n";
 
 	lexAdv();
 	if (currentToken.lexeme == "(")
@@ -624,19 +626,19 @@ void Read()
 				lexAdv();
 			else
 			{
-				cout << "\n<><><> Syntax Error. Expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				oftrace << "\n<><><> Syntax Error. Expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting '(' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting '(' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -645,7 +647,7 @@ void Read()
 void While()
 {
 	if (printSwitch)
-		cout << "\t<While> ::= while (<Condition>) <Statement>\n";
+		oftrace << "\t<While> ::= while (<Condition>) <Statement>\n";
 
 	lexAdv();
 	if (currentToken.lexeme == "(")
@@ -664,7 +666,7 @@ void While()
 void Condition()
 {
 	if (printSwitch)
-		cout << "\t<Condition> ::= <Expression> <Relop> <Expression>\n";
+		oftrace << "\t<Condition> ::= <Expression> <Relop> <Expression>\n";
 
 	Expression();
 	Relop();
@@ -675,7 +677,7 @@ void Condition()
 void Relop()
 {
 	if (printSwitch)
-		cout << "\t<Relop> ::= = | /= | > | < | => | <=\n";
+		oftrace << "\t<Relop> ::= = | /= | > | < | => | <=\n";
 
 	if (currentToken.lexeme == "=" || currentToken.lexeme == "/=" || currentToken.lexeme == ">"
 		|| currentToken.lexeme == "<" || currentToken.lexeme == "=>" || currentToken.lexeme == "<=")
@@ -684,7 +686,7 @@ void Relop()
 	}
 	else
 	{
-		cout << "\n<><><> Syntax error, expecting valid comparison operator before " << currentToken.lexeme << " on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax error, expecting valid comparison operator before " << currentToken.lexeme << " on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -693,7 +695,7 @@ void Relop()
 void Expression()
 {
 	if (printSwitch)
-		cout << "\t<Expression> ::= <Term> <Expression Prime>\n";
+		oftrace << "\t<Expression> ::= <Term> <Expression Prime>\n";
 
 	Term();
 	ExpressionPrime();
@@ -703,7 +705,7 @@ void Expression()
 void ExpressionPrime()
 {
 	if (printSwitch)
-		cout << "\t<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>\n";
+		oftrace << "\t<Expression Prime> ::= + <Term> <Expression Prime> | - <Term> <Expression Prime> | <Empty>\n";
 
 	if (currentToken.lexeme == "+" || currentToken.lexeme == "-")
 	{
@@ -713,7 +715,7 @@ void ExpressionPrime()
 	}
 	else if (currentToken.token == "UNKNOWN")
 	{
-		cout << "\n<><><> Syntax error, expecting '+', '-', or nothing before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax error, expecting '+', '-', or nothing before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 	else
@@ -726,7 +728,7 @@ void ExpressionPrime()
 void Term()
 {
 	if (printSwitch)
-		cout << "\t<Term> ::= <Factor> <Term Prime>\n";
+		oftrace << "\t<Term> ::= <Factor> <Term Prime>\n";
 	
 	Factor();
 	TermPrime();
@@ -736,7 +738,7 @@ void Term()
 void TermPrime()
 {
 	if (printSwitch)
-		cout <<  "\t<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>\n";
+		oftrace <<  "\t<Term Prime> ::= * <Factor> <Term Prime> | / <Factor> <Term Prime> | <Empty>\n";
 
 	if (currentToken.lexeme == "*" || currentToken.lexeme == "/")
 	{
@@ -746,7 +748,7 @@ void TermPrime()
 	}
 	else if (currentToken.token == "UNKNOWN")
 	{
-		cout << "\n<><><> Syntax Error, expecting '*', '/', or 'Empty' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting '*', '/', or 'Empty' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 	else
@@ -759,7 +761,7 @@ void TermPrime()
 void Factor()
 {
 	if (printSwitch)
-		cout << "\t<Factor> ::= - <Primary> | <Primary>\n";
+		oftrace << "\t<Factor> ::= - <Primary> | <Primary>\n";
 
 	if (currentToken.lexeme == "-")
 	{
@@ -774,16 +776,16 @@ void Factor()
 	
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting something different before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting something different before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
 
-//TODO Response: Removed error handling that shouldn't be there.
+
 void Primary()
 {
 	if (printSwitch)
-		cout << "\t<Primary> ::= <Identifier> | <Integer> | <Identifier> [<IDs>] | (<Expression>) | <Real> | true | false\n";
+		oftrace << "\t<Primary> ::= <Identifier> | <Integer> | <Identifier> [<IDs>] | (<Expression>) | <Real> | true | false\n";
 
 	if (currentToken.token == "IDENTIFIER")
 	{
@@ -798,7 +800,7 @@ void Primary()
 			}
 			else
 			{
-				cout << "\n<><><> Syntax Error, expecting ']' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				oftrace << "\n<><><> Syntax Error, expecting ']' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
@@ -825,7 +827,7 @@ void Primary()
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			oftrace << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
@@ -836,7 +838,7 @@ void Primary()
 	}
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting '<Identifer>', '<Qualifier>' or '<Expression>' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		oftrace << "\n<><><> Syntax Error, expecting '<Identifer>', '<Qualifier>' or '<Expression>' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -845,7 +847,7 @@ void Primary()
 void Empty()
 {
 	if (printSwitch)
-		cout << "\t<Empty> ::= epsilon\n";
+		oftrace << "\t<Empty> ::= epsilon\n";
 
 }
 
