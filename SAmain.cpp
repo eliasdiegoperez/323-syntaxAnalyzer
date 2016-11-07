@@ -77,6 +77,7 @@ int main()
 	*/
 
 	//Open file for reading
+	//infilepath = "test.txt";
 	//ifget.open(infilepath);
 
 	infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
@@ -268,6 +269,7 @@ void ParamList()
 			ParamList();
 		}
 		//TODO: Not sure if there should be a Syntax Error here.
+		//TODO RESPONSE: There doesn't.
 	}
 }
 
@@ -346,15 +348,17 @@ void DecList()
 			if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
 				DecList();
 		}
-		else if (currentToken.token == "IDENTIFIER")
-		{
+		//else if (currentToken.token == "IDENTIFIER")
+		//{
 			//TODO: Not sure if this logic is correct to catch this error.
-			cout << "\n<><><> Syntax Error, expecting ',' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
-			exit(1);
-		}
+			//cout << "\n<><><> Syntax Error, expecting ',' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			//exit(1);
+		//}
+		//RESPONSE: Is this for checking two identifiers in a row that aren't separated by commas?  
+					//This type of error should be caught in ID(), which I added as of typing this response.
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			cout << "\n<><><> Syntax Error, expecting ';' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 }
@@ -398,6 +402,11 @@ void IDs()
 		{
 			lexAdv();
 			IDs();
+		}
+		else if (currentToken.token == "IDENTIFIER")
+		{
+			cout << "\n<><><> Syntax Error, expecting ',' between multiple identifiers on line " << currentToken.lineNumber;
+			exit(1);
 		}
 	}
 	else
@@ -492,7 +501,9 @@ void Assign()
 	}
 }
 
-
+//TODO RESPONSE: Reverted If() to before '{' and '}' checks were added.  Compound() already did that.
+				//Before reverting If(), SA would break if there was more than one statement in the braces 
+				//following the if statement, and it shouldn't break.
 void If()
 {
 	if (printSwitch)
@@ -507,58 +518,40 @@ void If()
 			if (currentToken.lexeme == ")")
 			{
 				lexAdv();
-				if (currentToken.lexeme == "{")
+				Statement();
+				if (currentToken.lexeme == "endif")
+				{
+					lexAdv();
+				}
+				else if (currentToken.lexeme == "else")
 				{
 					lexAdv();
 					Statement();
-					if (currentToken.lexeme == "}")
+					if (currentToken.lexeme == "endif")
 					{
 						lexAdv();
-						if (currentToken.lexeme == "endif")
-						{
-							lexAdv();
-						}
-						else if (currentToken.lexeme == "else")
-						{
-							lexAdv();
-							Statement();
-							if (currentToken.lexeme == "endif")
-							{
-								lexAdv();
-							}
-							else
-							{
-								cout << "\n<><><> Syntax Error, expecting 'endif' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
-								exit(1);
-							}
-						}
-						else
-						{
-							cout << "\n<><><> Syntax Error, expecting 'endif' or 'else' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
-							exit(1);
-						}
 					}
 					else
 					{
-						cout << "\nSyntax Error, expecting '}' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+						cout << "\n<><><> Syntax Error, expecting 'endif' on line " << currentToken.lineNumber;
 						exit(1);
 					}
 				}
 				else
 				{
-					cout << "\n<><><> Syntax Error, expecting '{' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+					cout << "\n<><><> Syntax Error, expecting 'endif' or 'else' on line " << currentToken.lineNumber;
 					exit(1);
 				}
 			}
 			else
 			{
-				cout << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+				cout << "\n<><><> Syntax Error, expecting ) after <Condition> on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error, expecting '(' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			cout << "\n<><><> Syntax Error, expecting ( on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
@@ -699,7 +692,11 @@ void Relop()
 	{
 		lexAdv();
 	}
-	//TODO: Do we need a catch here for a syntax error?
+	else
+	{
+		cout << "\n<><><> Syntax error, expecting valid comparison operator before " << currentToken.lexeme << " on line " << currentToken.lineNumber;
+		exit(1);
+	}
 }
 
 
@@ -792,7 +789,7 @@ void Factor()
 	}
 }
 
-
+//TODO Response: Removed error handling that shouldn't be there.
 void Primary()
 {
 	if (printSwitch)
@@ -815,10 +812,10 @@ void Primary()
 				exit(1);
 			}
 		}
-		else if (currentToken.token == "IDENTIFIER")
+		else 
 		{
-			cout << "\n<><><> Syntax Error, expecting '<Realop>' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
-			exit(1);
+			//If current token is not '['.  Do nothing here.
+			//It means this function is running <Primary> ::= <Identifier> instead of <Primary> ::= <Identifier> [<IDs>]
 		}
 
 	}
