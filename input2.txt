@@ -1,0 +1,37 @@
+$$
+function dogs [ bark:integer ]
+{
+	return bark + 2;
+}
+
+
+function cats [ meow:integer ]
+{
+	return meow + 1;
+}
+
+$$
+
+integer i, like, dogs, more;
+
+
+read(i, like);
+while(dogs < more)
+{
+	read (like);
+	tomorrow := dogs - i;
+        print(i);
+        if (dogs > like)
+        {
+           print(i);
+        }
+        else
+        {
+             return 6;
+        }
+        endif
+        {
+             dogs := 5;
+        }
+}
+$$
