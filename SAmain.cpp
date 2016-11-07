@@ -328,7 +328,7 @@ void OptDecList()
 		DecList();
 	else
 	{
-		cout << "\n<><><> Syntax Error, expecting '{' before '" << currentToken.lexeme << "' on line: " << currentToken.lineNumber;
+		cout << "\n<><><> Syntax Error, expecting 'integer', 'boolean', or 'real' before '" << currentToken.lexeme << "' on line: " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -341,9 +341,28 @@ void DecList()
 
 		Declaration();
 		if (currentToken.lexeme == ";")
+		{
 			lexAdv();
 			if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
 				DecList();
+			else
+			{
+				//cout << "\n<><><> Syntax Error, expecting 'integer', 'boolean', or 'real' before '" << currentToken.lexeme << "' on line "
+				     //<< currentToken.lineNumber;
+				//exit(1);
+			}
+		}
+		else if (currentToken.token == "IDENTIFIER")
+		{
+			//TODO: Not sure if this logic is correct to catch this error.
+			cout << "\n<><><> Syntax Error, expecting ',' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			exit(1);
+		}
+		else
+		{
+			cout << "\n<><><> Syntax Error, expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			exit(1);
+		}
 }
 
 
@@ -386,6 +405,17 @@ void IDs()
 			lexAdv();
 			IDs();
 		}
+		else
+		{
+			//TODO: Cannot get this error to catch correctly. If the error is on line 9, then it messes up line 2 as well.
+			//cout << "\n<><><> Syntax Error, expecting ',' or ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			//exit(1);
+		}
+	}
+	else
+	{
+		cout << "\n<><><> Syntax Error, expecting <Identifier> before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		exit(1);
 	}
 }
 
@@ -467,6 +497,11 @@ void Assign()
 				exit(1);
 			}
 		}
+		else
+		{
+			cout << "\n<><><> Syntax Error, expecting ':=' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			exit(1);
+		}
 	}
 }
 
@@ -512,6 +547,11 @@ void If()
 					exit(1);
 				}
 			}
+		}
+		else
+		{
+			cout << "\n<><><> Syntax Error, expecting '(' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			exit(1);
 		}
 	}
 }
@@ -588,15 +628,20 @@ void Read()
 				lexAdv();
 			else
 			{
-				cout << "\n<><><> Syntax Error. Expecting ';'";
+				cout << "\n<><><> Syntax Error. Expecting ';' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
 		else
 		{
-			cout << "\n<><><> Syntax Error. Expecting ')'.";
+			cout << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
+	}
+	else
+	{
+		cout << "\n<><><> Syntax Error, expecting '(' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+		exit(1);
 	}
 }
 
@@ -648,6 +693,7 @@ void Expression()
 {
 	if (printSwitch)
 		cout << "\t<Expression> ::= <Term> <Expression Prime>\n";
+
 	Term();
 	ExpressionPrime();
 }
@@ -720,7 +766,7 @@ void Factor()
 		Primary();
 	}
 	
-	if (currentToken.token != "UNKNOWN")
+	else if (currentToken.token != "UNKNOWN")
 	{
 		Primary();
 	}
@@ -752,11 +798,16 @@ void Primary()
 			}
 			else
 			{
-				cout << "\n<><><><><><><><><><><><><><><>";
-				cout << "<Primary> error.  Expecting ']'";
+				cout << "\n<><><> Syntax Error, expecting ']' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 				exit(1);
 			}
 		}
+		else if (currentToken.token == "IDENTIFIER")
+		{
+			cout << "\n<><><> Syntax Error, expecting '<Realop>' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
+			exit(1);
+		}
+
 	}
 	
 	else if (currentToken.token == "INTEGER" || currentToken.token == "REAL")
@@ -774,8 +825,7 @@ void Primary()
 		}
 		else
 		{
-			cout << "\n<><><><><><><><><><><><><><><><>";
-			cout << "<Primary> error.  Expecting ')'";
+			cout << "\n<><><> Syntax Error, expecting ')' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
@@ -786,8 +836,7 @@ void Primary()
 	}
 	else
 	{
-		cout << "\n<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>";
-		cout << "<Primary> error. '<Identifer>', '<Qualifier>', 'true', or 'false' expected.";
+		cout << "\n<><><> Syntax Error, expecting '<Identifer>', '<Qualifier>' or '<Expression>' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
