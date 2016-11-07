@@ -77,12 +77,12 @@ int main()
 	*/
 
 	//Open file for reading
-	//infilepath = "test.txt";
-	//ifget.open(infilepath);
-
-	infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
-	outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	infilepath = "test.txt";
 	ifget.open(infilepath);
+
+	//infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
+	//outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	//ifget.open(infilepath);
 
 
 	//Catch issue with opening file
