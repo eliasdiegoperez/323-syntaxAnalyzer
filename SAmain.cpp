@@ -50,15 +50,23 @@ bool                    printSwitch = true;
 vector<tokenData>       tokens;                     //vector to hold tokens as they are being inputted
 vector<tokenData>       tokenList;                  //vector that holds all tokens once they have been read in initially
 tokenData               currentToken;
+ifstream			    ifget;
+ofstream				oftrace;
 
 
 int main() 
 {
-	ifstream			    ifget;
+
 	LA                      lex;
 	string				    current = "";
 	string				    infilepath = "";
 	string				    outfilepath = "";
+	
+	infilepath = "test.txt";
+	outfilepath = "output1.txt";
+	ifget.open(infilepath);
+	oftrace.open(outfilepath);
+
 
 	/*
 	//Input file to read from
@@ -80,10 +88,10 @@ int main()
 	//infilepath = "test.txt";
 	//ifget.open(infilepath);
 
-	infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
-	outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
-	ifget.open(infilepath);
-
+	//infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
+	//outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	//ifget.open(infilepath);
+//
 
 	//Catch issue with opening file
 	if (!ifget)
