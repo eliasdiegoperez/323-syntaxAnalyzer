@@ -4,7 +4,6 @@ function dogs [ bark:integer ]
 	return bark + 2;
 }
 
-
 function cats [ meow:integer ]
 {
 	return meow + 1;
