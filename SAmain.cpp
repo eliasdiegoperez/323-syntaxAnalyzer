@@ -77,12 +77,12 @@ int main()
 	*/
 
 	//Open file for reading
-	infilepath = "test.txt";
-	ifget.open(infilepath);
-
-	//infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
-	//outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	//infilepath = "test.txt";
 	//ifget.open(infilepath);
+
+	infilepath = "/home/joshua/Git/323-syntaxAnalyzer/input.txt";
+	outfilepath = "/home/joshua/Git/323-syntaxAnalyzer/output.txt";
+	ifget.open(infilepath);
 
 
 	//Catch issue with opening file
@@ -268,8 +268,6 @@ void ParamList()
 			lexAdv();
 			ParamList();
 		}
-		//TODO: Not sure if there should be a Syntax Error here.
-		//TODO RESPONSE: There doesn't.
 	}
 }
 
@@ -306,13 +304,13 @@ void Body()
 			lexAdv();
 		else
 		{
-			cout << "\n<><><> <Body> Syntax Error";
+			cout << "\n<><><> Syntax Error, expecting '}' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 			exit(1);
 		}
 	}
 	else
 	{
-		cout << "\n<><><> <Body> Syntax Error";
+		cout << "\n<><><> Syntax Error, expecting '{' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
 		exit(1);
 	}
 }
@@ -348,14 +346,6 @@ void DecList()
 			if (currentToken.lexeme == "integer" || currentToken.lexeme == "boolean" || currentToken.lexeme == "real")
 				DecList();
 		}
-		//else if (currentToken.token == "IDENTIFIER")
-		//{
-			//TODO: Not sure if this logic is correct to catch this error.
-			//cout << "\n<><><> Syntax Error, expecting ',' before '" << currentToken.lexeme << "' on line " << currentToken.lineNumber;
-			//exit(1);
-		//}
-		//RESPONSE: Is this for checking two identifiers in a row that aren't separated by commas?  
-					//This type of error should be caught in ID(), which I added as of typing this response.
 		else
 		{
 			cout << "\n<><><> Syntax Error, expecting ';' on line " << currentToken.lineNumber;
