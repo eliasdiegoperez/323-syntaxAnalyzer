@@ -31,13 +31,13 @@
     <Text Include="..\..\input.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="..\..\test1.txt">
+    <Text Include="test1.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="..\..\test2.txt">
+    <Text Include="test2.txt">
       <Filter>Resource Files</Filter>
     </Text>
-    <Text Include="..\..\test3.txt">
+    <Text Include="test3.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

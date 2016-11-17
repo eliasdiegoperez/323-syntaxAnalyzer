@@ -374,7 +374,7 @@ void Qualifier()
 		oftrace << "\t<Qualifier> ::= integer | boolean | real\n";
 
 	if (currentToken.lexeme == "integer" || currentToken.lexeme == "true" 
-		|| currentToken.lexeme == "false" || currentToken.lexeme == "real")
+		|| currentToken.lexeme == "false" || currentToken.lexeme == "real" || currentToken.lexeme == "boolean")
 		lexAdv();
 	else
 	{
